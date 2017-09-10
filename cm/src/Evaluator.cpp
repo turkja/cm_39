@@ -35,17 +35,22 @@ bool EvaluatorThread::init()
   return true;
 }
 
+void EvaluatorThread::signal()
+{
+  ready.signal();
+}
+
 // Normally all this work should be done by the Scheme itself..
 
 void EvaluatorThread::run()
 {
-  std::cout << " Welcome to Grace shell.\n";
+  std::cout << "Welcome to Grace shell.\n" << std::flush;
   std::string s;
   std::string s_exp;
   
   while (true) {
     size_t o = 0, c = 0;
-    std::cout << "> ";
+    std::cout << "> " << std::flush;
 
     // Read line
     while (true) {
@@ -82,6 +87,10 @@ void EvaluatorThread::run()
     if (s_exp.length()) {
       SchemeThread::getInstance()->eval("(begin " + s_exp + ")", true);
       s_exp = "";
+
+      // Wait for evaluation to finish
+      ready.wait();
+      ready.reset();
     }
   }
 }

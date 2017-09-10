@@ -21,6 +21,7 @@
 #include "CmSupport.h"
 #include "SndLib.h"
 #include "Scheme.h"
+#include "Evaluator.h"
 
 #ifdef WITH_FOMUS
 #include "Fomus.h"
@@ -92,7 +93,7 @@ XEvalNode::~XEvalNode()
 }
 
 bool XEvalNode::applyNode(SchemeThread* schemethread, double curtime) 
-{
+{  
   Console* console=Console::getInstance();
   s7_scheme* sc=schemethread->scheme;
   //  console->setEvaling(true);
@@ -114,6 +115,7 @@ bool XEvalNode::applyNode(SchemeThread* schemethread, double curtime)
     str << "\n";
     console->printValues(str);
   }
+  EvaluatorThread::getInstance()->signal();
   return false; 
 }
 

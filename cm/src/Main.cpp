@@ -132,7 +132,7 @@ void Grace::initialise(const juce::String& commandLine)
   std::cout << "Creating ConsoleWindow..." << std::flush;
   ConsoleWindow* win = new ConsoleWindow();
   std::cout << "OK!\n";
-  win->getConsole()->toFront(true);
+  //win->getConsole()->toFront(true);
 
 #ifdef JUCE_MAC
   juce::MenuBarModel::setMacMainMenu(menuBarModel);
@@ -155,9 +155,8 @@ void Grace::initialise(const juce::String& commandLine)
   }
 
 
-  // XXX: Create a thread that just waits for Scheme statements..
+  // Create a thread that just waits for Scheme statements..
   
-  std::cout << "Creating Evaluator..." << std::flush;
   EvaluatorThread* evt = EvaluatorThread::getInstance();
   evt->setPriority(10);
   evt->startThread();

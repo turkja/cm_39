@@ -78,21 +78,25 @@ void Console::display(juce::String str, juce::Colour color)
 
 void Console::printOutput(juce::String s, bool t)
 {
+  std::cout << s << std::flush;
   postAsyncMessage(CommandIDs::ConsolePrintOutput, s, t);
 }
 
 void Console::printValues(juce::String s, bool t)
 {
+  std::cout << s << std::flush;
   postAsyncMessage(CommandIDs::ConsolePrintValues, s, t);
 }
 
 void Console::printWarning(juce::String s, bool t)
 {
+  std::cout << s << std::flush;
   postAsyncMessage(CommandIDs::ConsolePrintWarning, s, t);
 }
 
 void Console::printError(juce::String s, bool t)
 {
+  std::cout << s << std::flush;
   postAsyncMessage(CommandIDs::ConsolePrintError, s, t);
 }
 
@@ -180,7 +184,7 @@ void Console::handleAsyncUpdate()
       break;
     case CommandIDs::ConsolePrintError:
       display(msg->text, consoleErrorColor);
-      getTopLevelComponent()->toFront(true); 
+      //getTopLevelComponent()->toFront(true); 
       if (getBeepOnError() )
         juce::LookAndFeel::getDefaultLookAndFeel().playAlertSound();
       break;

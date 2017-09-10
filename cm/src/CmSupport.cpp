@@ -36,7 +36,8 @@ int round(double n) {return (int)(n+.5);}
 
 void cm_quit()
 {
-  Console::getInstance()->printError(">>> Error: You cannot quit Grace from inside Lisp. Use Console>File>Quit to quit the application.\n");
+  juce::JUCEApplication::getInstance()->systemRequestedQuit();
+  //Console::getInstance()->printError(">>> Error: You cannot quit Grace from inside Lisp. Use Console>File>Quit to quit the application.\n");
 }
 
 void cm_begin_hook(s7_scheme* sc, bool* result)

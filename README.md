@@ -13,9 +13,10 @@ standard CM-3.9, but it also listens to S-expressions from standard input.
 - Now CM accepts input from shell, or from emacs via scheme-mode evaluation.
 - It is also possible to mix up input by opening files via CM GUI console.
 
-All output from CM, including errors, are sent to CM console, which
-is a graphical application. There's no easy way to grab that input back to
-console since the real console support was removed from CM-3.9.
+Grace is a graphical application that pops up when run-scheme is executed, which is kinda annoying.
+But you can minimize it and it shouldn't bother you anymore when you work on emacs. I didn't want
+to get rid of it completely, because I'm still not sure if everthing can be done from the Scheme
+(MIDI/audio configuration etc.).
 
 Ugly, yes, I know, but I can now write my notes in emacs and send them over
 to CM evaluator. Emacs scheme-mode does all that stuff automagically, I just
@@ -30,12 +31,12 @@ basically defined only few things in my emacs.el:
 				       (split-window-below)))
 ```
 
-In addition to this, I also did some small changes to the source in order to
-compile it succesfully under Fedora26:
+In addition to this, I also did some small changes:
 
 * Changed file chooser dialogs to JUCE from native (for some reason Gnome3 didn't like them)
 * Patched brutally, without knowing what I'm doing 'lround' -> 'ljround' in juce/modules/juce_audio_formats/codecs/flac/libFLAC/lpc_flac.c (Hey, works for me!)
 * Some tweaks to colors in the JUCE code editor (which I don't use anymore)
+* (quit) now works from the Scheme
 
 There's a little demonstration in "demo" directory. It's HTML5 video/audio, works propably only with recent firefox/chrome.
 

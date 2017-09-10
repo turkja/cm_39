@@ -13,9 +13,12 @@ public:
   EvaluatorThread() ;
   ~EvaluatorThread();
 
+  juce::WaitableEvent ready;
+  
   bool init();
   void quit();
   void run();
+  void signal();
   
   juce_DeclareSingleton (EvaluatorThread, true)
 };
