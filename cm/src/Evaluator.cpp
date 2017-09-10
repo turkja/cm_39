@@ -35,34 +35,51 @@ bool EvaluatorThread::init()
   return true;
 }
 
+// Normally all this work should be done by the Scheme itself..
+
 void EvaluatorThread::run()
 {
-
-  std::cout << "\n";
+  std::cout << " Welcome to Grace shell.\n";
   std::string s;
   std::string s_exp;
   
   while (true) {
     size_t o = 0, c = 0;
-    std::cout << "GRACE> ";
+    std::cout << "> ";
 
     // Read line
     while (true) {
-      std::getline(std::cin, s);
+      // Clear EOF
+      if (!std::getline(std::cin, s)) {
+	std::cin.clear();
+	break;
+      }
+      // Consider only characters leading up to ";"
+      std::size_t cf = s.find_first_of(";");
+      if (cf != std::string::npos)
+	s.resize(cf);
+
+      s_exp.append(s);
+      
       // Count for for opening "("
       o += std::count(s.begin(), s.end(), '(');
       // Count for closing ")"
       c += std::count(s.begin(), s.end(), ')');
-      s_exp.append(s);
-      // XXX: more intelligent parsing
+      
+      // XXX: more intelligent parsing, check for unbalanced parenthesis etc.
       if (c >= o) {
 	o = 0; c = 0;
 	break;
       }
     }
-    //std::cout << "INPUT: " << s << "\n";
-    //std::cout << "S-EXPRESSION: " << s_exp << "\n";
-    if (s_exp != "") {
+
+    // Skip leading whitespaces
+    std::size_t cf = s_exp.find_first_not_of(" ");
+    if (cf != std::string::npos)
+      s_exp = s_exp.substr(cf);
+
+    //std::cout << "S-EXPRESSION: " << s_exp << " (" << s_exp.length() << ")\n";
+    if (s_exp.length()) {
       SchemeThread::getInstance()->eval("(begin " + s_exp + ")", true);
       s_exp = "";
     }
