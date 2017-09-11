@@ -40,10 +40,18 @@ basically defined only few things in my emacs.el:
 
 ```lisp
 (setq scheme-program-name "~/bin/Grace")  ; <-- This is where I copied the compiled bin/Grace
+
 (define-key scheme-mode-map (kbd "<C-return>") 'scheme-send-last-sexp)
 (define-key scheme-mode-map (kbd "<C-M-return>") 'scheme-send-region)
+
 (add-hook 'inferior-scheme-mode-hook (lambda ()
-				       (split-window-below)))
+	(split-window-below)))
+	
+; S7 Scheme uses "macroexpand" instead of default "expand".
+(defcustom scheme-macro-expand-command "(macroexpand %s)"
+	"Template for macro-expanding a Scheme form. For Scheme 48 and Scsh use \",expand %s\"."
+	:type 'string
+	:group 'cmuscheme)
 ```
 
 In addition to this, I also did some small changes:
