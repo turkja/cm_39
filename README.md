@@ -5,7 +5,7 @@ This is a copy of CM/Grace 3.9 with a little hack that allowed me to
 use it as a emacs scheme-mode inferior Scheme. It is pretty much the
 standard CM-3.9, but it also listens to S-expressions from standard input.
 
-<a href="https://asciinema.org/a/AhEdw4oXTZs7dWstM1xYh8U5Z" target="_blank"><img src="https://asciinema.org/a/AhEdw4oXTZs7dWstM1xYh8U5Z.png?autoplay=1" /></a>
+<a href="https://asciinema.org/a/AhEdw4oXTZs7dWstM1xYh8U5Z?autoplay=1" target="_blank"><img src="https://asciinema.org/a/AhEdw4oXTZs7dWstM1xYh8U5Z.png" style="width: 200px;"/></a>
 
 ## How to use
 
