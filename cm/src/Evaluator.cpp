@@ -86,7 +86,7 @@ void EvaluatorThread::run()
     if (s_exp.length()) {
       // Reset the event before evaluation
       ready.reset();
-      SchemeThread::getInstance()->eval("(begin " + s_exp + ")", true);
+      SchemeThread::getInstance()->eval(s_exp, true);
       s_exp = "";
 
       // Wait for evaluation to finish
