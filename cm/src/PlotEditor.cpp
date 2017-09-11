@@ -78,7 +78,7 @@ void PlottingControls::timerCallback()
 
   if (changed)
   {
-    ////    std::cout << "Plotter changed to #<" << plotter << ">\n";
+    ////    std::cerr << "Plotter changed to #<" << plotter << ">\n";
     // if current tab is a layer editor switch to Tab 0.
     if (dynamic_cast<PlotLayerEditor*>(getCurrentContentComponent()) != 0)
     {
@@ -109,7 +109,7 @@ void PlottingControls::timerCallback()
       PlotEditor* e = getEditor(i);
       e->updateFromActivePlot(plotter, true);
     }
-    ////    std::cout << "Done PlottingControls::timerCallback\n";
+    ////    std::cerr << "Done PlottingControls::timerCallback\n";
   }
   else // plotter is same value as it was
   {
@@ -129,27 +129,27 @@ void PlottingControls::timerCallback()
  
 void PlottingControls::currentTabChanged (int newCurrentTabIndex, const juce::String &newCurrentTabName)
 {
-  ////  std::cout << "PlottingControls::currentTabChanged\n";
+  ////  std::cerr << "PlottingControls::currentTabChanged\n";
   PlotEditor* editor = dynamic_cast<PlotEditor*>(getTabContentComponent(newCurrentTabIndex));
   if (!editor)
   {
-    std::cout << "PlottingControls::currentTabChanged: No editor at new current tab index "
+    std::cerr << "PlottingControls::currentTabChanged: No editor at new current tab index "
               << newCurrentTabIndex << "\n";
     return;
   }
   switch (editor->tabType)
   {
   case PlotEditor::WindowEditor:
-    //    std::cout << "window editor!\n";    
+    //    std::cerr << "window editor!\n";    
     break;
   case PlotEditor::AudioEditor:
-    //    std::cout << "audio editor!\n";    
+    //    std::cerr << "audio editor!\n";    
     break;
   case PlotEditor::AxisEditor:
-    //    std::cout << "axis editor!\n";    
+    //    std::cerr << "axis editor!\n";    
     break;
   case PlotEditor::LayerEditor:
-    //      std::cout << "layer editor!\n";  
+    //      std::cerr << "layer editor!\n";  
     if (PlotLayerEditor* e = dynamic_cast<PlotLayerEditor*>(editor))
     {
       if (plotter)
@@ -161,13 +161,13 @@ void PlottingControls::currentTabChanged (int newCurrentTabIndex, const juce::St
     }
     break;
   case PlotEditor::ExportEditor:
-    //    std::cout << "export editor!\n";    
+    //    std::cerr << "export editor!\n";    
     break;
   case PlotEditor::PointsEditor:
-    //    std::cout << "points editor!\n";    
+    //    std::cerr << "points editor!\n";    
     break;
   default:
-    //    std::cout << "unknown editor!\n";
+    //    std::cerr << "unknown editor!\n";
     break;
   }
 }
@@ -245,7 +245,7 @@ PlotWindowEditor::~PlotWindowEditor ()
 void PlotWindowEditor::updateFromActivePlot(Plotter* plotter, bool statusHasChanged)
 {
   if (!statusHasChanged) return;
-  ////  std::cout << "PlotWindowEditor::updateFromActivePlot\n";
+  ////  std::cerr << "PlotWindowEditor::updateFromActivePlot\n";
   if (plotter)
   {
     setEnabled(true);
@@ -333,9 +333,9 @@ void PlotWindowEditor::resized()
 
 void PlotWindowEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
-  ////  std::cout << "PlotWindowEditor::buttonClicked\n";
+  ////  std::cerr << "PlotWindowEditor::buttonClicked\n";
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotWindowEditor::buttonClicked: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotWindowEditor::buttonClicked: no plotter!\n"; return;}
   if (buttonThatWasClicked == savebutton)
   {
     PlotWindow* window = plotter->getWindow();
@@ -368,9 +368,9 @@ void PlotWindowEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 
 void PlotWindowEditor::textEditorReturnKeyPressed(juce::TextEditor& editor) 
 {
-  ////  std::cout << "PlotWindowEditor::textEditorReturnKeyPressed\n";
+  ////  std::cerr << "PlotWindowEditor::textEditorReturnKeyPressed\n";
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotWindowEditor::textEditorReturnKeyPressed: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotWindowEditor::textEditorReturnKeyPressed: no plotter!\n"; return;}
   EditorTextBox* ed = dynamic_cast<EditorTextBox*>(&editor);
   if (ed)
     ed->setTextChanged(false);
@@ -387,9 +387,9 @@ void PlotWindowEditor::textEditorReturnKeyPressed(juce::TextEditor& editor)
 
 void PlotWindowEditor::changeListenerCallback (juce::ChangeBroadcaster* source)
 {
-  ////  std::cout << "PlotWindowEditor::changeListenerCallback\n";
+  ////  std::cerr << "PlotWindowEditor::changeListenerCallback\n";
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotWindowEditor::changeListenerCallback: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotWindowEditor::changeListenerCallback: no plotter!\n"; return;}
   if (source == bgcolorpicker)
   {
     juce::Colour color = bgcolorpicker->getCurrentColour();
@@ -400,9 +400,9 @@ void PlotWindowEditor::changeListenerCallback (juce::ChangeBroadcaster* source)
 
 void PlotWindowEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
-  ////  std::cout << "PlotWindowEditor::comboBoxChanged\n";
+  ////  std::cerr << "PlotWindowEditor::comboBoxChanged\n";
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotWindowEditor::comboBoxChanged: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotWindowEditor::comboBoxChanged: no plotter!\n"; return;}
   if (comboBoxThatHasChanged == fieldxmenu)
   {
   }
@@ -468,7 +468,7 @@ PlotAudioEditor::~PlotAudioEditor()
 void PlotAudioEditor::updateFromActivePlot(Plotter* plotter, bool statusHasChanged)
 {
   if (!statusHasChanged) return;
-  ////  std::cout << "PlotAudioEditor::updateFromActivePlot\n";
+  ////  std::cerr << "PlotAudioEditor::updateFromActivePlot\n";
   setEnabled(false);
   if (1) return;
   if (plotter)
@@ -526,7 +526,7 @@ void PlotAudioEditor::resized()
 void PlotAudioEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotAudioEditor::buttonClicked: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotAudioEditor::buttonClicked: no plotter!\n"; return;}
 
   if (buttonThatWasClicked == ycheckbox)
   {
@@ -543,7 +543,7 @@ void PlotAudioEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 void PlotAudioEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 {
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotAudioEditor::comboBoxChanged: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotAudioEditor::comboBoxChanged: no plotter!\n"; return;}
 
   if (comboBoxThatHasChanged == tuningmenu)
   {
@@ -556,9 +556,9 @@ void PlotAudioEditor::comboBoxChanged (juce::ComboBox* comboBoxThatHasChanged)
 void PlotAudioEditor::textEditorReturnKeyPressed(juce::TextEditor& editor)
 {
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotAudioEditor::textEditorReturnKeyPressed: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotAudioEditor::textEditorReturnKeyPressed: no plotter!\n"; return;}
 
-  ////  std::cout << "PlotAudioEditor::textEditorReturnKeyPressed\n";
+  ////  std::cerr << "PlotAudioEditor::textEditorReturnKeyPressed\n";
   EditorTextBox* ed=dynamic_cast<EditorTextBox*>(&editor);
   if (ed) ed->setTextChanged(false); else return;
 
@@ -676,7 +676,7 @@ PlotAxisEditor::~PlotAxisEditor()
 void PlotAxisEditor::updateFromActivePlot(Plotter* plotter, bool statusHasChanged)
 {
   if (!statusHasChanged) return;
-  ////  std::cout << "PlotAxisEditor::updateFromActivePlot\n";
+  ////  std::cerr << "PlotAxisEditor::updateFromActivePlot\n";
   if (plotter)
   {
     setEnabled(true);
@@ -760,9 +760,9 @@ void PlotAxisEditor::resized()
 
 void PlotAxisEditor::comboBoxChanged (juce::ComboBox* cbox)
 {
-  ////  std::cout << "PlotAxisEditor::comboBoxChanged\n";
+  ////  std::cerr << "PlotAxisEditor::comboBoxChanged\n";
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotAxisEditor::comboBoxChanged: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotAxisEditor::comboBoxChanged: no plotter!\n"; return;}
   if (cbox == typemenu)
   {
     if (plotter->isNotEmpty())
@@ -807,9 +807,9 @@ void PlotAxisEditor::comboBoxChanged (juce::ComboBox* cbox)
 
 void PlotAxisEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 {
-  ////  std::cout << "PlotAxisEditor::comboBoxChanged\n";
+  ////  std::cerr << "PlotAxisEditor::comboBoxChanged\n";
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotAxisEditor::sliderValueChanged: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotAxisEditor::sliderValueChanged: no plotter!\n"; return;}
   AxisView* axisview = plotter->getAxisView(orientation);
   if (sliderThatWasMoved == zoomslider)
   {
@@ -822,9 +822,9 @@ void PlotAxisEditor::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 
 void PlotAxisEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 {
-  ////  std::cout << "PlotAxisEditor::buttonClicked\n";
+  ////  std::cerr << "PlotAxisEditor::buttonClicked\n";
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotAxisEditor::buttonClicked: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotAxisEditor::buttonClicked: no plotter!\n"; return;}
   AxisView* axisview = plotter->getAxisView(orientation);
   if (buttonThatWasClicked == fitcheckbox)
   {
@@ -849,9 +849,9 @@ void PlotAxisEditor::buttonClicked (juce::Button* buttonThatWasClicked)
 
 void PlotAxisEditor::textEditorReturnKeyPressed (juce::TextEditor& editor)
 {
-  ////  std::cout << "PlotAxisEditor::textEditorReturnKeyPressed\n";
+  ////  std::cerr << "PlotAxisEditor::textEditorReturnKeyPressed\n";
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotAxisEditor::textEditorReturnKeyPressed: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotAxisEditor::textEditorReturnKeyPressed: no plotter!\n"; return;}
   EditorTextBox* ed=dynamic_cast<EditorTextBox*>(&editor);
   if (ed) ed->setTextChanged(false); else return;
 
@@ -1027,7 +1027,7 @@ PlotLayerEditor::~PlotLayerEditor()
 
 void PlotLayerEditor::updateFromActivePlot(Plotter* plotter, bool statusHasChanged)
 {
-  ////  std::cout << "PlotLayerEditor::updateFromActivePlot\n";
+  ////  std::cerr << "PlotLayerEditor::updateFromActivePlot\n";
   if (plotter)
   {
     setEnabled(true);
@@ -1106,7 +1106,7 @@ void PlotLayerEditor::resized()
 void PlotLayerEditor::buttonClicked (juce::Button* button)
 {
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotLayerEditor::buttonClicked: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotLayerEditor::buttonClicked: no plotter!\n"; return;}
   if (button == deletebutton)
   {
     juce::String text="Really delete layer '" + layer->getLayerName() + "'?";
@@ -1117,22 +1117,22 @@ void PlotLayerEditor::buttonClicked (juce::Button* button)
       return;
     PlottingControls* controls = getPlottingControls();
     int index = controls->getTabIndex(this);
-    //std::cout << "deleting plotter layer\n";
+    //std::cerr << "deleting plotter layer\n";
     plotter->removeLayer(layer);
     plotter->redrawBackView();
     plotter->redrawPlotView();
     delete layer;
     // select main tab because this one is going away!
-    //std::cout << "selecting main tab\n";
+    //std::cerr << "selecting main tab\n";
     controls->setCurrentTabIndex(0);
     if (dynamic_cast<PlotWindowEditor*>(controls->getTabContentComponent(0)) != 0)
       updateFromActivePlot(plotter, true);
     // remove ourselves
-    //std::cout << "removing ourselves\n";
+    //std::cerr << "removing ourselves\n";
     controls->removeTab(index);
-    //std::cout << "updating layer editors\n";
+    //std::cerr << "updating layer editors\n";
     // delete ourselves!
-    //std::cout << "deleting ourselves\n";
+    //std::cerr << "deleting ourselves\n";
     delete this;
   }
 }
@@ -1140,7 +1140,7 @@ void PlotLayerEditor::buttonClicked (juce::Button* button)
 void PlotLayerEditor::comboBoxChanged (juce::ComboBox* cbox)
 {
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotLayerEditor::comboBoxChanged: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotLayerEditor::comboBoxChanged: no plotter!\n"; return;}
   if (cbox == stylemenu)
   {
     int style = stylemenu->getSelectedId();
@@ -1158,7 +1158,7 @@ void PlotLayerEditor::comboBoxChanged (juce::ComboBox* cbox)
 void PlotLayerEditor::changeListenerCallback (juce::ChangeBroadcaster* source)
 {
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotLayerEditor::changeListenerCallback: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotLayerEditor::changeListenerCallback: no plotter!\n"; return;}
   // FIXME: this should only color the layer if the USER is setting
   // it, not updateForActivePlot()
   if (source == colorpicker)
@@ -1175,7 +1175,7 @@ void PlotLayerEditor::changeListenerCallback (juce::ChangeBroadcaster* source)
 void PlotLayerEditor::textEditorReturnKeyPressed(juce::TextEditor& editor)
 {
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotLayerEditor::textEditorReturnKeyPressed: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotLayerEditor::textEditorReturnKeyPressed: no plotter!\n"; return;}
   EditorTextBox* ed=dynamic_cast<EditorTextBox*>(&editor);
   if (ed) ed->setTextChanged(false); else return;
 
@@ -1194,7 +1194,7 @@ void PlotLayerEditor::textEditorReturnKeyPressed(juce::TextEditor& editor)
   else if (ed == linetextbox)
   {
     double val=linetextbox->getDoubleValue();
-    //std::cout << "linetextbox, val=" << val << "\n";
+    //std::cerr << "linetextbox, val=" << val << "\n";
     if (linetextbox->isNumericText() && (val > 0.0) && (val <= 16.0))
     {
       layer->lineWidth=val;
@@ -1206,7 +1206,7 @@ void PlotLayerEditor::textEditorReturnKeyPressed(juce::TextEditor& editor)
   else if (ed == pointtextbox)
   {
     double val=pointtextbox->getDoubleValue();
-    //std::cout << "linetextbox, val=" << val << "\n";
+    //std::cerr << "linetextbox, val=" << val << "\n";
     if (pointtextbox->isNumericText() && (val > 0.0) && (val <= 24.0))
     {
       layer->pointWidth=val;
@@ -1218,7 +1218,7 @@ void PlotLayerEditor::textEditorReturnKeyPressed(juce::TextEditor& editor)
   else if (ed == bartextbox)
   {
     double val=bartextbox->getDoubleValue();
-    //std::cout << "linetextbox, val=" << val << "\n";
+    //std::cerr << "linetextbox, val=" << val << "\n";
     if (bartextbox->isNumericText() && (val > 0.0) && (val <= 48.0))
     {
       layer->barWidth=val;
@@ -1233,7 +1233,7 @@ void PlotLayerEditor::textEditorReturnKeyPressed(juce::TextEditor& editor)
     double dur=durtypein->getDoubleValue();
     if (durtypein->isNumericText() && (dur > 0.0))
     {
-      //std::cout << "setting layer dur to " << dur << "\n";
+      //std::cerr << "setting layer dur to " << dur << "\n";
       layer->pbDur=dur;
     }
     else
@@ -1245,7 +1245,7 @@ void PlotLayerEditor::textEditorReturnKeyPressed(juce::TextEditor& editor)
     double amp=amptypein->getDoubleValue();
     if (amptypein->isNumericText() && (amp >= 0.0))
     {
-      //std::cout << "setting layer amp to " << amp << "\n";
+      //std::cerr << "setting layer amp to " << amp << "\n";
 
       layer->pbAmp=amp;
     }
@@ -1331,7 +1331,7 @@ PlotExportEditor::~PlotExportEditor()
 void PlotExportEditor::updateFromActivePlot(Plotter* plotter, bool statusHasChanged)
 {
   if (!statusHasChanged) return;
-  ////  std::cout << "PlotLayerEditor::updateFromActivePlot\n";
+  ////  std::cerr << "PlotLayerEditor::updateFromActivePlot\n";
   if (plotter)
   {
     setEnabled(true);
@@ -1375,7 +1375,7 @@ void PlotExportEditor::resized()
 void PlotExportEditor::buttonClicked (juce::Button* button)
 {
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotExportEditor::buttonClicked: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotExportEditor::buttonClicked: no plotter!\n"; return;}
   if (button == exportbutton)
   {
     exportPoints();
@@ -1395,7 +1395,7 @@ void PlotExportEditor::buttonClicked (juce::Button* button)
 void PlotExportEditor::comboBoxChanged(juce::ComboBox* cbox)
 {
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotExportEditor::comboBoxChanged: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotExportEditor::comboBoxChanged: no plotter!\n"; return;}
   if (cbox == formatmenu)
   {
     int id = cbox->getSelectedId();
@@ -1421,7 +1421,7 @@ void PlotExportEditor::comboBoxChanged(juce::ComboBox* cbox)
 void PlotExportEditor::exportPoints() 
 {
   Plotter* plotter = getPlotter();
-  if (!plotter){std::cout << "PlotExportEditor::exportPoints: no plotter!\n"; return;}
+  if (!plotter){std::cerr << "PlotExportEditor::exportPoints: no plotter!\n"; return;}
   int decimals = decimalsmenu->getSelectedId() - 1;
   int exportwhat = formatmenu->getSelectedId();
   int target = destmenu->getSelectedId();

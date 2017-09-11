@@ -67,7 +67,7 @@ void cm_print_values(char* str)
 
 void cm_print_stdout(char* str)
 {
-  std::cout << str;
+  std::cerr << str;
 }
 
 /** record printers **/
@@ -177,7 +177,7 @@ int cm_string_hash(char* str)
 {
   int temphash = (juce::String(str)).hashCode();
   //  juce::int64 hash = temphash;
-  //  std::cout << "temphash is " << temphash << " and hash value is "<< hash << std::endl;
+  //  std::cerr << "temphash is " << temphash << " and hash value is "<< hash << std::endl;
   return temphash;
 }
 
@@ -1212,7 +1212,7 @@ s7_pointer sal_eval(juce::String text, int type)
   s7_pointer func;
   if (type==TextIDs::Sal1)
   {
-    std::cout << "load type=sal\n";
+    std::cerr << "load type=sal\n";
     if (!SalSyntax::getInstance()->tokenize(text, tokens))
     {
       tokens.clear();
@@ -1222,7 +1222,7 @@ s7_pointer sal_eval(juce::String text, int type)
   }
   else
   {
-    std::cout << "load type=sal2\n";
+    std::cerr << "load type=sal2\n";
     if (!Sal2Syntax::getInstance()->tokenize(text, tokens))
     {
       tokens.clear();
@@ -1333,12 +1333,12 @@ void mp_send_note(s7_pointer time, s7_pointer dur, s7_pointer key, s7_pointer am
   {
     if (!check_fomus_exists()) return;
     Fomus* fms = Fomus::getInstance();
-    //    std::cout << "fms:note ";
+    //    std::cerr << "fms:note ";
     // keynum
     if (s7_is_real(key))
     {
       fms->fval(fomus_par_pitch, fomus_act_set, s7_number_to_real(scm->scheme,key));
-      //      std::cout << "pitch=" << s7_number_to_real(key);
+      //      std::cerr << "pitch=" << s7_number_to_real(key);
     }
     else
       scm->signalSchemeError("mp:midi: key not a real number");
@@ -1347,12 +1347,12 @@ void mp_send_note(s7_pointer time, s7_pointer dur, s7_pointer key, s7_pointer am
     {
       double a = s7_number_to_real(scm->scheme, amp);
       fms->fval(fomus_par_dynlevel, fomus_act_set, ((a >= 1.0) ? (a / 127.0) : a));
-      //      std::cout << ", amp=" << a;
+      //      std::cerr << ", amp=" << a;
     }
     else if (amp == s7_f(scm->scheme))
     {
       fms->fval(fomus_par_dynlevel, fomus_act_set, 0.0);
-      //      std::cout << ", amp=0.0";
+      //      std::cerr << ", amp=0.0";
     }
     else
       scm->signalSchemeError("mp:midi: amp not a real number");
@@ -1360,17 +1360,17 @@ void mp_send_note(s7_pointer time, s7_pointer dur, s7_pointer key, s7_pointer am
     if (s7_is_ratio(time))
     {
       fms->rval(fomus_par_time, fomus_act_set, s7_numerator(time), s7_denominator(time));
-      //      std::cout << ", time=" << s7_numerator(time) << "/" << s7_denominator(time);
+      //      std::cerr << ", time=" << s7_numerator(time) << "/" << s7_denominator(time);
     }
     else if (s7_is_real(time))
     {
       fms->fval(fomus_par_time, fomus_act_set, s7_number_to_real(scm->scheme, time));
-      //      std::cout << ", time=" << s7_number_to_real(time);
+      //      std::cerr << ", time=" << s7_number_to_real(time);
     }
     else if (time == s7_f(scm->scheme))
     {
       fms->act(fomus_par_time, fomus_act_n);      
-      //      std::cout << ", time=#f";
+      //      std::cerr << ", time=#f";
     }
     else
       scm->signalSchemeError("mp:midi: time not a number");
@@ -1378,7 +1378,7 @@ void mp_send_note(s7_pointer time, s7_pointer dur, s7_pointer key, s7_pointer am
     if (s7_is_real(dur))
     {
       fms->fval(fomus_par_duration, fomus_act_set, s7_number_to_real(scm->scheme, dur));
-      //      std::cout << ", dur=" << s7_number_to_real(dur);
+      //      std::cerr << ", dur=" << s7_number_to_real(dur);
     }
     else
       scm->signalSchemeError("mp:midi: dur not a real number");
@@ -1386,12 +1386,12 @@ void mp_send_note(s7_pointer time, s7_pointer dur, s7_pointer key, s7_pointer am
     if (s7_is_integer(chan))
     {
       fms->ival(fomus_par_part, fomus_act_set, s7_integer(chan));
-      //      std::cout << ", part=" << s7_integer(chan);
+      //      std::cerr << ", part=" << s7_integer(chan);
     }
     else if (chan != s7_f(scm->scheme))
       scm->signalSchemeError("mp:midi: chan not an int");
     fms->act(fomus_par_noteevent,  fomus_act_add);
-    //    std::cout << "\n";
+    //    std::cerr << "\n";
   }
   else
 #endif   
@@ -1672,7 +1672,7 @@ s7_pointer cm_midifile_import(char* path, int track, s7_pointer midivalues)
       // if all the values match then process them and add to return list
       if (ok)
       {
-        //std::cout << "event [" << i << "] op=" << op << " values are applicable\n";
+        //std::cerr << "event [" << i << "] op=" << op << " values are applicable\n";
         s7_pointer add=NULL;
         if (format==1)
           add=getMidiValue(scheme, e, vals[0], op, lasttime, lastontime);
@@ -1784,13 +1784,13 @@ s7_pointer mp_is_midi_hook(int op)
 
 void cs_open_score(char* args)
 {
-  //  std::cout << "cm_init_score " << args << "\n";
+  //  std::cerr << "cm_init_score " << args << "\n";
   Csound::getInstance()->initScore(juce::String(args));
 }
 
 void cs_send_score(int typ, int num, double time, char* pars)
 {
-  //std::cout << "cs_send_score " << typ << " " << num << " "  << time << " " << pars << "\n";
+  //std::cerr << "cs_send_score " << typ << " " << num << " "  << time << " " << pars << "\n";
   Csound::getInstance()->addToScore(typ,num,time,juce::String(pars));
 }
 
@@ -2003,7 +2003,7 @@ bool sw_open_from_xml(char* text)
   bool ok=true;
   if (xml)
   {
-    std::cout << "xml=" << xml->createDocument(juce::String::empty, true, false) << "\n";
+    std::cerr << "xml=" << xml->createDocument(juce::String::empty, true, false) << "\n";
     if (xml->hasTagName("statewindow"))
     {
       StateWindow* sw=StateWindow::findStateWindow(xml->getStringAttribute("title"));
@@ -2219,7 +2219,7 @@ s7_pointer sdif_import(char* path,  s7_pointer sig)
       SdifFloat8 frametime = SdifFCurrTime(sdiffile);
       SdifUInt4 numarrays  = SdifFCurrNbMatrix(sdiffile);
       char* sigstring = SdifSignatureToString(SdifFCurrSignature(sdiffile));
-      //      std::cout << "frame " << sigstring << ", time=" << frametime << ", arrays=" << numarrays << "\n";
+      //      std::cerr << "frame " << sigstring << ", time=" << frametime << ", arrays=" << numarrays << "\n";
       // frame = (<type> )
       s7_pointer fhead = s7_cons(st->scheme, s7_make_symbol(st->scheme, sigstring), st->schemeNil);
       s7_pointer ftail = fhead;
@@ -2237,7 +2237,7 @@ s7_pointer sdif_import(char* path,  s7_pointer sig)
         // mhead is the pointer to a matrix list (<sig> (row...) (row...))
         s7_pointer mhead = s7_cons(st->scheme, s7_make_symbol(st->scheme, SdifSignatureToString(arraysig)), st->schemeNil);
         s7_pointer mtail = mhead;
-        // std::cout << "matrix " << SdifSignatureToString(arraysig) << ", rows=" << numrows << ", cols=" << numcols << "\n";
+        // std::cerr << "matrix " << SdifSignatureToString(arraysig) << ", rows=" << numrows << ", cols=" << numcols << "\n";
         for (int r = 0; r < numrows; r++)
         {
           s7_pointer rhead = 0;

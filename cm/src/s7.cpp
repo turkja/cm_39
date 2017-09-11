@@ -39,7 +39,7 @@ int main(int argc, const char* argv[])
   {
     while (std::cin)
     {
-      std::cout << "\ns7> ";
+      std::cerr << "\ns7> ";
       str = "";
       while (true)
       {
@@ -53,14 +53,14 @@ int main(int argc, const char* argv[])
       if (is_not_white(str))
       {
         val = s7_eval_c_string(s7, str.c_str());
-        std::cout << s7_object_to_c_string(s7, val);
+        std::cerr << s7_object_to_c_string(s7, val);
       }
     }
   }
   catch(...)
   {
   }
-  std::cout << "Bye!\n";
+  std::cerr << "Bye!\n";
   free(s7);
   return 0;
 }

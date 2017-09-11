@@ -149,7 +149,7 @@ void CodeEditorWindow::closeButtonPressed ()
   }
   if (Grace::getApp().activeWindow == this)
   {
-    //    std::cout << "CodeEditorWindow: clearing activeWindow before deleteing\n";
+    //    std::cerr << "CodeEditorWindow: clearing activeWindow before deleteing\n";
     Grace::getApp().setActiveWindow(0);
   }
   delete this;
@@ -290,7 +290,7 @@ void CodeEditorWindow::saveFile(bool saveas)
   // otherwise abort if the code buffer isnt changed
   else if (!getCodeEditor()->isChanged())
   {
-    //std::cout << "aborting save, buffer not changed\n";
+    //std::cerr << "aborting save, buffer not changed\n";
     return;
   }
   // save the file
@@ -343,7 +343,7 @@ bool CodeEditorWindow::isCustomComment ()
   // true if first line in document is a comment line starting with -*-
   // example:  ;; -*- syntax: lisp, theme: "clarity and beauty", -*-
   juce::String line = document.getLine(0);
-  //std::cout << "isCustomComment(), first line='" << line.toUTF8() << "'\n";
+  //std::cerr << "isCustomComment(), first line='" << line.toUTF8() << "'\n";
 
   if (line.isEmpty()) return false;
   int len = line.length();
@@ -372,7 +372,7 @@ juce::XmlElement* CodeEditorWindow::getCustomizations ()
   if (customizations.size() == 1)
     return 0;
   //  for (int i = 0; i < customizations.size(); i++) 
-  //    std::cout << "customizations["<<i<<"]='" << customizations[i] << "'\n";
+  //    std::cerr << "customizations["<<i<<"]='" << customizations[i] << "'\n";
   juce::XmlElement* xml = new juce::XmlElement("customizations");
   for (int i = 0; i < customizations.size(); i++)
   {
@@ -383,7 +383,7 @@ juce::XmlElement* CodeEditorWindow::getCustomizations ()
     if (tokens.size() != 2)
       continue;
     //    for (int i = 0; i < tokens.size(); i++) 
-    //      std::cout << "tokens["<<i<<"]='" << tokens[i] << "'\n";
+    //      std::cerr << "tokens["<<i<<"]='" << tokens[i] << "'\n";
 
     // customizations are case insensitive
     if (tokens[0].equalsIgnoreCase("syntax"))
@@ -439,11 +439,11 @@ void CodeEditorWindow::readCustomComment()
   if (!xml)
     return;
   CodeEditor* buff = getCodeEditor();
-  //std::cout << "Customizations:\n";
+  //std::cerr << "Customizations:\n";
   for (int i = 0; i < xml->getNumAttributes(); i++)
   {
     juce::String name = xml->getAttributeName(i);
-    std::cout << "  " << name << " " << xml->getAttributeValue(i) << "\n";
+    std::cerr << "  " << name << " " << xml->getAttributeValue(i) << "\n";
     if (name == "syntax")
       ;
     else if (name == "theme")
@@ -483,14 +483,14 @@ void CodeEditorWindow::writeCustomComment(bool select)
   }
   buffer->moveCaretToTop(false);
 
-  //std::cout << "after delete, looking at (" << buffer->getCaretPos().getPosition() << "): '" << document.getTextBetween(buffer->getCaretPos(), buffer->getCaretPos().movedBy(1)).toUTF8() << "'\n";
+  //std::cerr << "after delete, looking at (" << buffer->getCaretPos().getPosition() << "): '" << document.getTextBetween(buffer->getCaretPos(), buffer->getCaretPos().movedBy(1)).toUTF8() << "'\n";
   /*
   if (buffer->isEOB())
     custom << document.getNewLineCharacters();
   if (!juce::CharacterFunctions::isWhitespace(a.getCharacter())) //.movedByLines(1)
     custom << document.getNewLineCharacters();
   */
-  //  std::cout << "custom='" << custom << "'\n";
+  //  std::cerr << "custom='" << custom << "'\n";
   buffer->insertTextAtCaret(custom);
   a.setLineAndIndex(1, 0);
   buffer->moveCaretTo(a, false);
@@ -772,7 +772,7 @@ CodeEditor::CodeEditor(juce::CodeDocument& doc, Syntax* tokenizer,
   setTabSize(tabwidth, true);
   // view width is width of columized text plus width of yscroller and
   // line number gutter (which seems to be 2x scrollbar)
-  //  std::cout << "doc=" << document.getMaximumLineLength() << " col=" << columns << "\n";
+  //  std::cerr << "doc=" << document.getMaximumLineLength() << " col=" << columns << "\n";
   //  int w = (getCharWidth() * columns) + (getScrollbarThickness() * 2);
   int w = (int)(getCharWidth() * columns) + 56;
   int h = getLineHeight() * lines;
@@ -796,7 +796,7 @@ void CodeEditor::insertTextAtCaret (const juce::String& textToInsert)
   {
     const juce::juce_wchar c=textToInsert[0];
     const bool e=isEmacsMode();
-    //    std::cout << "CodeEditor::insertTextAtCaret='" << c << "'\n"; 
+    //    std::cerr << "CodeEditor::insertTextAtCaret='" << c << "'\n"; 
 
     add=false;
     switch (c)
@@ -840,7 +840,7 @@ void CodeEditor::insertTextAtCaret (const juce::String& textToInsert)
       // otherwise only add newlines or standard ascii chars to the buffer!
       add=(c==10)||(c>=32 && c<=126);
       if (!add)
-        std::cout << "Refusing to insert char '" << c << "'\n";
+        std::cerr << "Refusing to insert char '" << c << "'\n";
       break;
     }
   }
@@ -860,7 +860,7 @@ bool CodeEditor::keyPressed (const juce::KeyPress& key)
   const int both = (juce::ModifierKeys::ctrlModifier | juce::ModifierKeys::altModifier);
   const bool emacs=isEmacsMode();
 
-  //  std::cout << "CodeEditor::keyPressed key=" << key.getTextDescription() << "\n";
+  //  std::cerr << "CodeEditor::keyPressed key=" << key.getTextDescription() << "\n";
   if (isParensMatchingActive()) 
     stopParensMatching();
 
@@ -977,12 +977,12 @@ bool CodeEditor::keyPressed (const juce::KeyPress& key)
     juce::CommandID id = Grace::getApp().commandManager.getKeyMappings()->findCommandForKeyPress(key);
     if (id)
     { 
-      //      std::cout << "found " << id << " in global command mananger\n";
+      //      std::cerr << "found " << id << " in global command mananger\n";
       Grace::getApp().commandManager.invokeDirectly(id, true);
       return true;
     }
     // FIXME!
-    //    std::cout << "no handler for keypress, setting buffer changed=true\n";
+    //    std::cerr << "no handler for keypress, setting buffer changed=true\n";
     isChanged(true); // unhandled so adding chars to the buffer
     return false;     
   }
@@ -993,14 +993,14 @@ bool CodeEditor::keyPressed (const juce::KeyPress& key)
 
 void CodeEditor::mouseDown(const juce::MouseEvent& e)
 {
-  //  std::cout << "MouseDown!\n";
+  //  std::cerr << "MouseDown!\n";
   // call juce method to do whatever it needs to do
   juce::CodeEditorComponent::mouseDown(e);
   bool wasRegionOnUp = regionState.getEnd();
   bool isRegionOnDown = !getHighlightedRegion().isEmpty();
   if (wasRegionOnUp != isRegionOnDown)
   {
-    //    std::cout << "CodeEditor::MouseDown: region changed!\n";
+    //    std::cerr << "CodeEditor::MouseDown: region changed!\n";
     Grace::getApp().refreshMenuBar();
   }
   regionState.setStart(isRegionOnDown);
@@ -1008,14 +1008,14 @@ void CodeEditor::mouseDown(const juce::MouseEvent& e)
 
 void CodeEditor::mouseUp(const juce::MouseEvent& e)
 {
-  //  std::cout << "MouseUp!\n";
+  //  std::cerr << "MouseUp!\n";
   // call juce method to do whatever it wants to do
   juce::CodeEditorComponent::mouseUp(e);
   bool wasRegionOnDown = regionState.getStart(); 
   bool isRegionOnUp = !getHighlightedRegion().isEmpty();
   if (wasRegionOnDown != isRegionOnUp)
   {
-    //    std::cout << "CodeEditor::MouseUp: region changed!\n";
+    //    std::cerr << "CodeEditor::MouseUp: region changed!\n";
     Grace::getApp().refreshMenuBar();
   }
   regionState.setEnd(isRegionOnUp);
@@ -1023,7 +1023,7 @@ void CodeEditor::mouseUp(const juce::MouseEvent& e)
 
 void CodeEditor::mouseDoubleClick (const juce::MouseEvent &e)
 {
-  //  std::cout << "CodeEditor::MouseDoubleClick!\n";
+  //  std::cerr << "CodeEditor::MouseDoubleClick!\n";
   juce::juce_wchar c = getCaretPos().getCharacter();
   switch (c)
   {
@@ -1037,7 +1037,7 @@ void CodeEditor::mouseDoubleClick (const juce::MouseEvent &e)
       {
         moveCaretTo(a,true);
         regionState.setEnd(true);
-        //        std::cout << "MouseDoubleClick: region changed!\n";
+        //        std::cerr << "MouseDoubleClick: region changed!\n";
         Grace::getApp().refreshMenuBar();
       }
       break;
@@ -1052,7 +1052,7 @@ void CodeEditor::mouseDoubleClick (const juce::MouseEvent &e)
       {
         moveCaretTo(a, true);
         regionState.setEnd(true);
-        //        std::cout << "MouseDoubleClick: region changed!\n";
+        //        std::cerr << "MouseDoubleClick: region changed!\n";
         Grace::getApp().refreshMenuBar();
       }
       break;
@@ -1079,7 +1079,7 @@ void CodeEditor::mouseDoubleClick (const juce::MouseEvent &e)
         b.moveBy(1);  // move one past found char
         moveCaretTo(b, true);
         regionState.setEnd(true);
-        //        std::cout << "MouseDoubleClick: region changed!\n";
+        //        std::cerr << "MouseDoubleClick: region changed!\n";
         Grace::getApp().refreshMenuBar();
       }
       break;
@@ -1103,7 +1103,7 @@ void CodeEditor::selectAll()
   juce::CodeEditorComponent::selectAll();
   if (!wasRegion)
   {
-    //    std::cout << "CodeEditor::selectAll: region changed!\n";
+    //    std::cerr << "CodeEditor::selectAll: region changed!\n";
     Grace::getApp().refreshMenuBar();
   }  
 }
@@ -1116,7 +1116,7 @@ void CodeEditor::deselectAll()
   juce::CodeEditorComponent::deselectAll();
   if (wasRegion)
   {
-    //    std::cout << "CodeEditor::deselectAll: region changed!\n";
+    //    std::cerr << "CodeEditor::deselectAll: region changed!\n";
     Grace::getApp().refreshMenuBar();
   }
 }
@@ -1539,7 +1539,7 @@ bool CodeEditor::findNext(juce::String str, bool wrap)
   int got=-1;
   while (true)
   {
-    //std::cout << "Top of loop, pos="<<pos.getPosition() 
+    //std::cerr << "Top of loop, pos="<<pos.getPosition() 
     //          << ", pos+wid=" << pos.getPosition()+wid << ", eob=" << eob << "\n";
     if (pos.getPosition()+wid>eob) // not enough chars to make a match
     {
@@ -1560,7 +1560,7 @@ bool CodeEditor::findNext(juce::String str, bool wrap)
     }
     int len=tmp.length();
     // next search position must overlapping current end
-    //std::cout<< "bottom of loop, moving pos by " << len-wid+1 << "\n";
+    //std::cerr<< "bottom of loop, moving pos by " << len-wid+1 << "\n";
     pos.moveBy(len-wid+1);
   }
   if (got>-1)
@@ -1656,7 +1656,7 @@ void CodeEditor::lookupHelpAtPoint()
         text = document.getTextBetween(a, e);
     }
   }
-  //std::cout << "help target='" << text.toUTF8() << "'\n";
+  //std::cerr << "help target='" << text.toUTF8() << "'\n";
   if (text.isNotEmpty())
     Help::getInstance()->symbolHelp(text, helppath);
   else // open CM dictionary if no symbol
@@ -1716,7 +1716,7 @@ void CodeEditor::killExprForward()
 
 void CodeEditor::killExprBackward()
 {
-  //  std::cout << "killExprBackward\n";
+  //  std::cerr << "killExprBackward\n";
 }
 
 void CodeEditor::killLine()
@@ -1780,7 +1780,7 @@ void CodeEditor::changeCase(int flag)
 
 void CodeEditor::killRegion()
 {
-  //  std::cout << "killRegion\n";
+  //  std::cerr << "killRegion\n";
 }
 
 void CodeEditor::openLine()
@@ -1795,7 +1795,7 @@ void CodeEditor::posInfo(const juce::CodeDocument::Position p)
 {
   juce::String s;
   s << p.getCharacter();
-  //  std::cout << "curs=" << p.getPosition() << " (" << p.getLineNumber() << "," << p.getIndexInLine() << "), char='" << s << "'\n"
+  //  std::cerr << "curs=" << p.getPosition() << " (" << p.getLineNumber() << "," << p.getIndexInLine() << "), char='" << s << "'\n"
   //            << "line='" << p.getLineText() << "'\n"
   //            << ", bol?="<< isBOL() << ", eol?=" << isEOL() << ", bob?="<< isBOB() << ", eob?=" << isEOB() << "\n";
 }
@@ -1830,11 +1830,11 @@ void CodeEditor::eval(bool expandonly)
   //// int n=0;
   while (true /*&& (n<100) */)
   {
-    ////std::cout << n++ << " before backwardExpr, bot=" << bot.getPosition() << ", top=" << top.getPosition() << "\n";
+    ////std::cerr << n++ << " before backwardExpr, bot=" << bot.getPosition() << ", top=" << top.getPosition() << "\n";
 
     scan=syntax->backwardExpr(document, bot, top);
 
-    //      std::cout << "after backwardExpr, scan=" << scan << ", bot="
+    //      std::cerr << "after backwardExpr, scan=" << scan << ", bot="
     //            << bot.getPosition() << ", top=" << top.getPosition() 
     //            << ", expr='" << document.getTextBetween(bot, top).toUTF8() << "'"
     //            << "\n";
@@ -1842,13 +1842,13 @@ void CodeEditor::eval(bool expandonly)
     // break on error or nothing new to add
     if (scan<=0) 
     {
-      //std::cout << "breaking scan<0\n";
+      //std::cerr << "breaking scan<0\n";
       break;
     }
     // break if past lower bounds
     if (bot.getPosition()<end)
     {
-      //std::cout << "breaking pos<end\n";
+      //std::cerr << "breaking pos<end\n";
       break;
     }
     // push current expr bounds onto array
@@ -1857,20 +1857,20 @@ void CodeEditor::eval(bool expandonly)
     // break if we are evalling just one backward expr
     if (regn==0) 
     {
-      //std::cout << "breaking (regn=false)\n";
+      //std::cerr << "breaking (regn=false)\n";
       break; 
     }
     // break if we added last possible expr
     if (bot.getPosition()==end)
     {
-      //std::cout << "breaking pos=end\n";
+      //std::cerr << "breaking pos=end\n";
       break;
     }
     // move top to bot (ie 1 above next start)
     top=juce::CodeDocument::Position(bot);
   }
 
-  //std::cout << "after loop, epos.size()=" << epos.size() << "\n";
+  //std::cerr << "after loop, epos.size()=" << epos.size() << "\n";
   if (scan<0)
   {
     juce::String text;
@@ -1898,7 +1898,7 @@ void CodeEditor::eval(bool expandonly)
   }
   else
   {
-    //std::cout << "empty!\n";
+    //std::cerr << "empty!\n";
   }
 }
 
@@ -1918,13 +1918,13 @@ void CodeEditor::indent()
   int old=0;
   while (old<all.length() && (all[old]==' ' || all[old]=='\t'))
     old++;
-  //std::cout << "old=" << old << ", col=" << col << ", len=" << all.length() << "\n";
+  //std::cerr << "old=" << old << ", col=" << col << ", len=" << all.length() << "\n";
   //if (col==old) return;
   moveCaretTo(bol,false);
   if (old>col)
   {
-    //std::cout <<"cursor at col="<<getCaretPos().getIndexInLine()<<"\n";
-    //std::cout << "removing " << (old-col)<<"\n";
+    //std::cerr <<"cursor at col="<<getCaretPos().getIndexInLine()<<"\n";
+    //std::cerr << "removing " << (old-col)<<"\n";
     for (int i=0; i<(old-col); i++)
       moveCaretRight(false,true);
     deleteForwards(false);
@@ -1935,7 +1935,7 @@ void CodeEditor::indent()
     juce::String pad (juce::String::empty);  
     for (int i=0; i<(col-old); i++)
       pad<<" ";
-    //std::cout << "adding " << (col-old)<< "pad=='" << pad.toUTF8() << "'\n";
+    //std::cerr << "adding " << (col-old)<< "pad=='" << pad.toUTF8() << "'\n";
     insertTextAtCaret(pad);
     isChanged(true);
   }

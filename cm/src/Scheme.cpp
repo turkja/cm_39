@@ -748,7 +748,7 @@ void SchemeThread::load(juce::File file, bool addtorecent)
   if (file==juce::File::nonexistent)
   {
     juce::FileChooser choose("Load",
-                             juce::File::getCurrentWorkingDirectory());
+                             juce::File::getCurrentWorkingDirectory(), "*.*", false);
     if (choose.browseForFileToOpen())
     {
       file=choose.getResult();

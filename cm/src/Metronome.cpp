@@ -204,9 +204,9 @@ double Metronome::getNowTime(void)
 
 double Metronome::getNowTempo()
 {
-  //  std::cout << "*** get now tempo" << std::endl;
+  //  std::cerr << "*** get now tempo" << std::endl;
   printGraph();
-  //  std::cout << "*** Tempo graph printed above" << std::endl;
+  //  std::cerr << "*** Tempo graph printed above" << std::endl;
   double time = getNowTime();
   return getTempoFromTime(time);
 }
@@ -646,7 +646,7 @@ void Metronome::reset(double tempo)
 void Metronome::printGraph()
 {
   for(int i = 0; i < bpmGraph.size(); i = i + 2)
-    std::cout << "x = " << bpmGraph[i] << " and y = " << bpmGraph[i + 1] << std::endl;
+    std::cerr << "x = " << bpmGraph[i] << " and y = " << bpmGraph[i + 1] << std::endl;
 }
 
 Metronome::Metronome(double curtime, double tempo)

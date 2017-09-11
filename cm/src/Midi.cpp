@@ -188,14 +188,14 @@ MidiOutPort::~MidiOutPort()
 const juce::StringArray MidiOutPort::getDevices()
 {
   //  static int n = 0;
-  //  std::cout << "--\ncalling getDevices() [" << ++n << "]\n";
+  //  std::cerr << "--\ncalling getDevices() [" << ++n << "]\n";
   juce::StringArray outs = juce::MidiOutput::getDevices();
   if (outs.contains("<error>"))
   {
-    std::cout << "--\nMIDI DEVICE ERROR:\n";
+    std::cerr << "--\nMIDI DEVICE ERROR:\n";
     for(int i = 0; i < outs.size(); i++)
-      std::cout << "devices[" << i << "]=" << outs[i] << "\n";
-    std::cout << "\n";
+      std::cerr << "devices[" << i << "]=" << outs[i] << "\n";
+    std::cerr << "\n";
   }
   if (isInternalSynth)
     outs.insert(0, internalSynthName);
@@ -238,14 +238,14 @@ bool MidiOutPort::open(int id)
   if (device) // have a physical device
   {
     // delete the current open device before opening a new one
-    //    std::cout << "deleting physical device (openDeviceId was " << openDeviceId << " and now is -1)\n";
+    //    std::cerr << "deleting physical device (openDeviceId was " << openDeviceId << " and now is -1)\n";
     delete device;
     device = 0;
     openDeviceId = -1;
   }
   else if (isInternalSynth && openDeviceId == 0) // internal synth
   {
-    //    std::cout << "'clearing' internal synth device (openDeviceId was " << openDeviceId << " and now is -1)\n";
+    //    std::cerr << "'clearing' internal synth device (openDeviceId was " << openDeviceId << " and now is -1)\n";
     device = 0; // no device to delete
     openDeviceId = -1;
   }
@@ -255,7 +255,7 @@ bool MidiOutPort::open(int id)
   {
     device = 0;        // no physical device
     openDeviceId = id; // device id == 0
-    //    std::cout << "'opening' internal synth device, openDeviceId=" << openDeviceId << "\n";
+    //    std::cerr << "'opening' internal synth device, openDeviceId=" << openDeviceId << "\n";
   }
   else 
   {
@@ -267,13 +267,13 @@ bool MidiOutPort::open(int id)
     if (!device)
     {
       openDeviceId = -1;
-      //      std::cout << "FAILED to open physical device! juceDeviceIndex=" 
+      //      std::cerr << "FAILED to open physical device! juceDeviceIndex=" 
       //                << juceDeviceIndex << " openDeviceId=" << openDeviceId << "\n";
     }
     else
     {
       openDeviceId = id;
-      //      std::cout << "opened physical device, juceDeviceIndex=" 
+      //      std::cerr << "opened physical device, juceDeviceIndex=" 
       //                << juceDeviceIndex << " openDeviceId=" << openDeviceId << "\n";
     }
   }
@@ -320,7 +320,7 @@ void MidiOutPort::close(int id)
   if (device)
   {
     Preferences::getInstance()->setStringProp("MidiOutDevice", juce::String::empty);
-    //    std::cout << "deleting physical device (openDeviceId was " << openDeviceId << " and now is -1)\n";
+    //    std::cerr << "deleting physical device (openDeviceId was " << openDeviceId << " and now is -1)\n";
     delete device;
     device = 0;
     openDeviceId = -1;
@@ -328,7 +328,7 @@ void MidiOutPort::close(int id)
   }
   else if (isInternalSynth && (id == 0))
   {
-    std::cout << "'clearing' internal synth device (openDeviceId was " << openDeviceId << " and now is -1)\n";
+    std::cerr << "'clearing' internal synth device (openDeviceId was " << openDeviceId << " and now is -1)\n";
     Preferences::getInstance()->setStringProp("MidiOutDevice", juce::String::empty);
     if (device) delete device;
     device = 0;
@@ -814,7 +814,7 @@ void MidiOutPort::sendInstruments()
 {
   if (1)// (isOpen())
   {
-    //    std::cout << "sending instruments\n"; 
+    //    std::cerr << "sending instruments\n"; 
     for (int c = 0; c < 16; c++)
     {
       // FIXME: I THINK THIS IS LEAKING MEMORY
@@ -1015,7 +1015,7 @@ bool MidiInPort::open(int id)
     openDeviceId = id;
     device->start();
     juce::StringArray devices = getDevices();
-    //    std::cout << "updating prefs with " << devices[id] << "\n";
+    //    std::cerr << "updating prefs with " << devices[id] << "\n";
     openDeviceName = devices[id];
     Preferences::getInstance()->setStringProp("MidiInDevice", devices[id]);
     // FIXME: DO I UPDATE AUDIO MANAGER TOO??
@@ -1042,7 +1042,7 @@ void MidiInPort::close(int id)
 {
   if (device)
   {
-    //      std::cout << "midIIN.CLOSE(), removing MidiINDevice from prefs\n" ;
+    //      std::cerr << "midIIN.CLOSE(), removing MidiINDevice from prefs\n" ;
     Preferences::getInstance()->setStringProp("MidiInDevice", juce::String::empty);
     device->stop();
     delete device;
@@ -1269,7 +1269,7 @@ struct MidiDeviceSettings : public juce::Component,
     }
 #endif
     // width is larger of 3 times widest label and 400px
-    //    std::cout << "size=" << getWidth() << ", " << getHeight() << "\n";
+    //    std::cerr << "size=" << getWidth() << ", " << getHeight() << "\n";
     setSize(width, height);
   }
 
@@ -1354,13 +1354,13 @@ struct MidiDeviceSettings : public juce::Component,
   void buttonClicked(juce::Button* b)
   {
     juce::String s = b->getButtonText();
-    //    std::cout << "buttonClicked: " << s
+    //    std::cerr << "buttonClicked: " << s
     //              << " toggleState: " << b->getToggleState() << "\n";
     if (ins.contains(b))
     {
       if (MidiInPort::getInstance()->getOpenDeviceName() != s)
       {
-        //        std::cout << "Opening input port " << s << "\n";
+        //        std::cerr << "Opening input port " << s << "\n";
         MidiInPort::getInstance()->open(s);
         Grace::getApp().refreshMenuBar();
       }
@@ -1369,7 +1369,7 @@ struct MidiDeviceSettings : public juce::Component,
     {
       if (MidiOutPort::getInstance()->getOpenDeviceName() != s)
       {
-        //        std::cout << "Opening output port " << s << "\n";
+        //        std::cerr << "Opening output port " << s << "\n";
         MidiOutPort::getInstance()->open(s);
         Grace::getApp().refreshMenuBar();
       }

@@ -56,7 +56,7 @@ bool AudioManager::createInternalSynth()
   if(!internalSynth)
   {
     //    juce::AlertWindow::showMessageBox(juce::AlertWindow::WarningIcon, "Couldn't create Internal Synth", err);
-    std::cout << "Couldn't create Internal Synth\n";
+    std::cerr << "Couldn't create Internal Synth\n";
     return false;
   }
 
@@ -83,18 +83,18 @@ bool AudioManager::createInternalSynth()
 
   int MCI = juce::AudioProcessorGraph::midiChannelIndex;
   /*
-    std::cout << "Midi input node id=" << N1->nodeId << "\n";
-    std::cout << "Internal synth node id=" << N2->nodeId << "\n";
-    std::cout << "Audio output node id=" << N3->nodeId << "\n";
-    std::cout << "Internal synth output chans=" << internalSynth->getNumOutputChannels() << "\n";
+    std::cerr << "Midi input node id=" << N1->nodeId << "\n";
+    std::cerr << "Internal synth node id=" << N2->nodeId << "\n";
+    std::cerr << "Audio output node id=" << N3->nodeId << "\n";
+    std::cerr << "Internal synth output chans=" << internalSynth->getNumOutputChannels() << "\n";
     for (int i = 0; i < internalSynth->getNumOutputChannels(); i++)
-    std::cout << i << ":" << internalSynth->getOutputChannelName(i) << "\n";
-    std::cout << "Output node input chans=" << AudioOutputNode->getNumInputChannels() << "\n";
+    std::cerr << i << ":" << internalSynth->getOutputChannelName(i) << "\n";
+    std::cerr << "Output node input chans=" << AudioOutputNode->getNumInputChannels() << "\n";
     for (int i = 0; i < AudioOutputNode->getNumInputChannels(); i++)
-    std::cout << i << ":" << AudioOutputNode->getInputChannelName(i) << "\n";
-    std::cout << "can connect Midi->Synth=" << synthGraph.canConnect(N1->nodeId, MCI, N2->nodeId, MCI) << "\n";
-    std::cout << "can connect Synth0->Audio0=" << synthGraph.canConnect(N2->nodeId, 0, N3->nodeId, 0) << "\n";
-    std::cout << "can connect Synth1->Audio1=" << synthGraph.canConnect(N2->nodeId, 1, N3->nodeId, 1) << "\n";
+    std::cerr << i << ":" << AudioOutputNode->getInputChannelName(i) << "\n";
+    std::cerr << "can connect Midi->Synth=" << synthGraph.canConnect(N1->nodeId, MCI, N2->nodeId, MCI) << "\n";
+    std::cerr << "can connect Synth0->Audio0=" << synthGraph.canConnect(N2->nodeId, 0, N3->nodeId, 0) << "\n";
+    std::cerr << "can connect Synth1->Audio1=" << synthGraph.canConnect(N2->nodeId, 1, N3->nodeId, 1) << "\n";
   */
   if(!synthGraph.canConnect(N1->nodeId, MCI, N2->nodeId, MCI) ||
      !synthGraph.canConnect(N2->nodeId, 0, N3->nodeId, 0) ||
@@ -108,7 +108,7 @@ bool AudioManager::createInternalSynth()
   synthGraph.addConnection(N1->nodeId, MCI, N2->nodeId, MCI);
   synthGraph.addConnection(N2->nodeId, 0, N3->nodeId, 0);
   synthGraph.addConnection(N2->nodeId, 1, N3->nodeId, 1);
-  //  std::cout << "is connected=" << synthGraph.isConnected(N2->nodeId, N3->nodeId) << "\n";
+  //  std::cerr << "is connected=" << synthGraph.isConnected(N2->nodeId, N3->nodeId) << "\n";
   // End AudioProcessorGraph creation
 #endif
   return true;
@@ -168,12 +168,12 @@ void AudioManager::listAllPlugins()
   juce::KnownPluginList plugins;
   juce::AudioPluginFormatManager* formats = &pluginFormatManager;
   
-  std::cout << "Audio Plugin Formats:\n";
+  std::cerr << "Audio Plugin Formats:\n";
   for(int i = 0; i < formats->getNumFormats(); i++)
   {
     juce::AudioPluginFormat* f = formats->getFormat(i);
-    std::cout << f->getName() << " paths:\n";
-    std::cout << f->getDefaultLocationsToSearch().toString();
+    std::cerr << f->getName() << " paths:\n";
+    std::cerr << f->getDefaultLocationsToSearch().toString();
     juce::PluginDirectoryScanner scanner
       (plugins, *f, f->getDefaultLocationsToSearch(), true, juce::File::nonexistent);
     bool Searching = true;
@@ -196,7 +196,7 @@ void AudioManager::listAllPlugins()
   for(int i = 0; i < plugins.getNumTypes(); i++)
   {
     juce::PluginDescription* desc = plugins.getType(i);
-    std::cout << i << ": " << desc->name << " " << desc->fileOrIdentifier << "\n";
+    std::cerr << i << ": " << desc->name << " " << desc->fileOrIdentifier << "\n";
   }
 }
 

@@ -1412,7 +1412,7 @@ bool Grace::perform(const juce::ApplicationCommandTarget::InvocationInfo& info)
   case CommandIDs::FileSetInit:
     {
       juce::File d = juce::File::getCurrentWorkingDirectory();
-      juce::FileChooser choose ("Select lisp file to load at startup", d);
+      juce::FileChooser choose ("Select lisp file to load at startup", d, "*.*", false);
       if (choose.browseForFileToOpen())
         Preferences::getInstance()->setStringProp("LispInitFile", choose.getResult().getFullPathName());
     }
@@ -1434,7 +1434,7 @@ bool Grace::perform(const juce::ApplicationCommandTarget::InvocationInfo& info)
   case CommandIDs::FileSetDirectory:
     {
       juce::File d = juce::File::getCurrentWorkingDirectory();
-      juce::FileChooser choose ("Set Working Directory", d);
+      juce::FileChooser choose ("Set Working Directory", d, "*.*", false);
       if (choose.browseForDirectory())
       {
         choose.getResult().setAsCurrentWorkingDirectory();

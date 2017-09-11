@@ -44,23 +44,21 @@ void EvaluatorThread::signal()
 
 void EvaluatorThread::run()
 {
-  std::cout << "Welcome to Grace shell.\n" << std::flush;
+  std::cerr << "Welcome to Grace shell.\n" << std::flush;
+  std::cerr << "> " << std::flush;
   std::string s;
   std::string s_exp;
-  bool input = 1;
   while (true) {
     size_t o = 0, c = 0;
-    if (input) std::cout << "> " << std::flush;
+    //if (input) std::cerr << "> " << std::flush;
 
     // Read line
     while (true) {
       // Clear EOF
       if (!std::getline(std::cin, s)) {
 	std::cin.clear();
-	input = 0;
 	break;
       }
-      input = 1;
       // Consider only characters leading up to ";"
       std::size_t cf = s.find_first_of(";");
       if (cf != std::string::npos)
@@ -73,13 +71,12 @@ void EvaluatorThread::run()
       // Count for closing ")"
       c += std::count(s.begin(), s.end(), ')');
       
-      // XXX: more intelligent parsing, check for unbalanced parenthesis etc.
+      // XXX: more intelligent parsing, check for unbalanced parenthesis etc. (?)
       if (c >= o) {
 	o = 0; c = 0;
 	break;
       }
     }
-
     // Skip leading whitespaces
     std::size_t cf = s_exp.find_first_not_of(" ");
     if (cf != std::string::npos)
@@ -87,12 +84,14 @@ void EvaluatorThread::run()
 
     //std::cout << "S-EXPRESSION: " << s_exp << " (" << s_exp.length() << ")\n";
     if (s_exp.length()) {
+      // Reset the event before evaluation
+      ready.reset();
       SchemeThread::getInstance()->eval("(begin " + s_exp + ")", true);
       s_exp = "";
 
       // Wait for evaluation to finish
       ready.wait();
-      ready.reset();
+      std::cerr << "> " << std::flush;
     }
   }
 }

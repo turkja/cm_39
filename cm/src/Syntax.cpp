@@ -61,7 +61,7 @@ void Syntax::setCharSyntax (const juce::String chrs, const int syn)
     if (chrs[i]<128)
       syntab[chrs[i]] = syn;
     else
-      std::cout << "setCharSyntax: WARNING: index [" << i << "] in \"" << chrs << "\" is > 127!\n";
+      std::cerr << "setCharSyntax: WARNING: index [" << i << "] in \"" << chrs << "\" is > 127!\n";
 }
 
 bool Syntax::isWhiteChar (const juce::juce_wchar c)
@@ -151,13 +151,13 @@ bool Syntax::lookingAt(const juce::CodeDocument::Position pos, const juce::Strin
     {
       //String str="comparing ";
       //str << at.getCharacter() << "&" << text[i] << "\n";
-      //std::cout << str.toUTF8();
+      //std::cerr << str.toUTF8();
       if (at.getCharacter() != text[i])
         return false;
       else
         at.moveBy(1);
     }
-    //std::cout << "done, i==len: " << (i==len) << " at==end: "  << (at==end) << "\n";
+    //std::cerr << "done, i==len: " << (i==len) << " at==end: "  << (at==end) << "\n";
     if (i==len)
       return (delimited) ? ((at==end) || !isTokenChar(at.getCharacter())) : true;
     return false;
@@ -529,8 +529,8 @@ int Syntax::scanCode(juce::CodeDocument& document, juce::CodeDocument::Position&
     } 
   } // end while
 
-  //std::cout << "pos="<<pos.getPosition()<< ",typ="<<typ<<",isfirst="<<atfirst<<"\n";
-  //std::cout << "after scan, par=" << par << "\n";
+  //std::cerr << "pos="<<pos.getPosition()<< ",typ="<<typ<<",isfirst="<<atfirst<<"\n";
+  //std::cerr << "after scan, par=" << par << "\n";
   // move pos back to the first char if backward scan
 
   if (typ<0) 
@@ -546,7 +546,7 @@ int Syntax::scanCode(juce::CodeDocument& document, juce::CodeDocument::Position&
         (pos!=end )    )      
        )
     {
-      //std::cout << "incrementing pos\n";
+      //std::cerr << "incrementing pos\n";
       pos.moveBy(1);
     }
   }
@@ -775,7 +775,7 @@ int LispSyntax::readNextToken(juce::CodeDocument::Iterator &source)
         bool func = (par + 1 == source.getPosition() - i);
         if (func && getSynTok(check))
         {
-          //std::cout << "par=" << par << ",i=" << i << ", pos=" << source.getPosition() -i << "\n";
+          //std::cerr << "par=" << par << ",i=" << i << ", pos=" << source.getPosition() -i << "\n";
           typ = TokenLispSpecialForm;
         }
         else
@@ -823,32 +823,32 @@ int LispSyntax::getIndentation(juce::CodeDocument& document, int line)
       break;
     }
   }
-  //std::cout << "after loop, scan="<<scan<< ", pos=" << pos.getPosition() << ", col=" << pos.getIndexInLine() << "\n";
+  //std::cerr << "after loop, scan="<<scan<< ", pos=" << pos.getPosition() << ", col=" << pos.getIndexInLine() << "\n";
   // stopped on a balanced expr in column 0 so indent to whatever
   // position the very LATEST subexpr is or use column 0
   if (scan!=ScanIDs::SCAN_UNLEVEL)
   {
     if (substarts.size()==0)
     {
-      ////          std::cout << "balanced indent: 0\n";
+      ////          std::cerr << "balanced indent: 0\n";
       return 0;
     }
     juce::CodeDocument::Position sub ((const juce::CodeDocument&)document, substarts.getLast());
-    ////std::cout << "balanced indent: " << sub.getIndexInLine() << "\n";
+    ////std::cerr << "balanced indent: " << sub.getIndexInLine() << "\n";
     return sub.getIndexInLine();
   }
   // otherwise we've stopped on an unbalanced open parens.
 
-  //  std::cout << "unlevel: (" << pos.getPosition() << ") -> '" 
+  //  std::cerr << "unlevel: (" << pos.getPosition() << ") -> '" 
   //            << document.getTextBetween(pos, pos.movedBy(1)).toUTF8() 
   //           << "'\nsubexprs:\n";
   //  for (int i=0; i<subtypes.size(); i++)
-  //    std::cout << "  " << substarts[i] << ": " << ScanIDs::scanResultToString(subtypes[i]).toUTF8() << "\n";
+  //    std::cerr << "  " << substarts[i] << ": " << ScanIDs::scanResultToString(subtypes[i]).toUTF8() << "\n";
 
   // if no subexprs indent 1 position beyond open parens
   if (subtypes.size()==0)
   {
-    ////std::cout << "nothing forward, indent column=" << pos.getIndexInLine()+1 << "\n";
+    ////std::cerr << "nothing forward, indent column=" << pos.getIndexInLine()+1 << "\n";
     return pos.getIndexInLine()+1;
   }
 
@@ -856,7 +856,7 @@ int LispSyntax::getIndentation(juce::CodeDocument& document, int line)
   if (subtypes.getFirst()!=ScanIDs::SCAN_TOKEN)
   {
     juce::CodeDocument::Position sub ((const juce::CodeDocument&)document, substarts.getFirst());
-    ////std::cout << "not a token, indent column=" << sub.getIndexInLine() << "\n";
+    ////std::cerr << "not a token, indent column=" << sub.getIndexInLine() << "\n";
     return sub.getIndexInLine();
   }
 
@@ -869,7 +869,7 @@ int LispSyntax::getIndentation(juce::CodeDocument& document, int line)
   juce::String name=document.getTextBetween(tokbeg,tokend);
   int nargs=substarts.size()-1;    // num subexpr args after token
 
-  //std::cout << "num exprs=" << subtypes.size() << ", numstarts=" << substarts.size() << "\n";
+  //std::cerr << "num exprs=" << subtypes.size() << ", numstarts=" << substarts.size() << "\n";
 
   if (Syntax::SynTok* syntok=getSynTok(name)) // is special form
   {
@@ -880,42 +880,42 @@ int LispSyntax::getIndentation(juce::CodeDocument& document, int line)
     // if we have no args or exactly body args then do a body indent
     // otherwise indent to the column of the last subexpr.
 
-    ////std::cout << "special form: '" << name.toUTF8() << "', nargs="<< nargs << ", body=" << body;
+    ////std::cerr << "special form: '" << name.toUTF8() << "', nargs="<< nargs << ", body=" << body;
 
-    //std::cout << "special nargs=" << nargs << "\n";
+    //std::cerr << "special nargs=" << nargs << "\n";
 
     if (nargs==0 || nargs==body)
     {
-      ////std::cout << "body indent, indent column=" << pos.movedBy(2).getIndexInLine() << "\n";
+      ////std::cerr << "body indent, indent column=" << pos.movedBy(2).getIndexInLine() << "\n";
       return pos.movedBy(2).getIndexInLine();
     }
     else
     {
       //**  juce::CodeDocument::Position sub (&document, substarts.getLast());
-      //**//std::cout << "indent to last expr, indent column=" << sub.getIndexInLine() << "\n";
+      //**//std::cerr << "indent to last expr, indent column=" << sub.getIndexInLine() << "\n";
       //** return sub.getIndexInLine();
       substarts.remove(0);  
       int x=lastIndented(document, substarts, false);
-      //std::cout << "returning indent col=" << x << "\n";
+      //std::cerr << "returning indent col=" << x << "\n";
       return x;
     }
   }
   else // token not special, indent to last expr or to pos+1 if none
   {
-    //std::cout << "no special nargs=" << nargs << "\n";
+    //std::cerr << "no special nargs=" << nargs << "\n";
     if (nargs==0)
     {
-      ////std::cout << "normal token with no args, indent column=" << pos.movedBy(1).getIndexInLine() << "\n";
+      ////std::cerr << "normal token with no args, indent column=" << pos.movedBy(1).getIndexInLine() << "\n";
       return pos.movedBy(1).getIndexInLine();
     }
     else
     {
       //** juce::CodeDocument::Position sub (&document, substarts.getLast());
-      //**//std::cout << "normal token (args), indent column=" << sub.getIndexInLine() << "\n";
+      //**//std::cerr << "normal token (args), indent column=" << sub.getIndexInLine() << "\n";
       //return sub.getIndexInLine();
       substarts.remove(0);
       int x=lastIndented(document, substarts, false);
-      //std::cout << "returning indent col=" << x << "\n";
+      //std::cerr << "returning indent col=" << x << "\n";
       return x;
     }
   }
@@ -941,7 +941,7 @@ int LispSyntax::backwardExpr(juce::CodeDocument& document, juce::CodeDocument::P
 void LispSyntax::eval(juce::CodeDocument& document, const juce::CodeDocument::Position start, const juce::CodeDocument::Position end, bool expand, bool region)
 {
   juce::String code=document.getTextBetween(start, end);
-  //std::cout << "eval='" << code.toUTF8() << "'\n";
+  //std::cerr << "eval='" << code.toUTF8() << "'\n";
   if (expand)
     code="(macroexpand " + code + ")";
   if (region)
@@ -1171,7 +1171,7 @@ int SalSyntax::readNextToken(juce::CodeDocument::Iterator &source)
         if (tok)
         {
           int ttyp=tok->getType();
-          //std::cout << "linestart=" << newline << "literal=" << check.toUTF8() << "\n";
+          //std::cerr << "linestart=" << newline << "literal=" << check.toUTF8() << "\n";
           if (newline && (SalIDs::isSalCommandType(ttyp) || ttyp==SalIDs::SalEnd))
           {
             typ=SalIDs::TokenSalCommand;                    
@@ -1256,19 +1256,19 @@ int SalSyntax::getIndentation(juce::CodeDocument& document, int line)
     if (substarts.size()>0) // use last subexpr indentation
     {
       col=lastIndented(document, substarts, false);
-      if (trace) std::cout << "UNLEVEL indent (last expr), column=" << col << "\n"; 
+      if (trace) std::cerr << "UNLEVEL indent (last expr), column=" << col << "\n"; 
       return col;
     }
     else
     {
       col=pos.movedBy(1).getIndexInLine();
-      if (trace) std::cout << "UNLEVEL indent (no exprs), column=" << col << "\n";
+      if (trace) std::cerr << "UNLEVEL indent (no exprs), column=" << col << "\n";
       return col;
     }
   }
   else if (subtypes.size()==0) // no expressions encountered (only white space)
   {
-    if (trace) std::cout << "EMPTY indent, column=0\n" ;
+    if (trace) std::cerr << "EMPTY indent, column=0\n" ;
     return 0;
   }  
 
@@ -1278,16 +1278,16 @@ int SalSyntax::getIndentation(juce::CodeDocument& document, int line)
   if (!SalIDs::isSalType(subtypes[0]))     // stopped on a non-sal expression
   {
     col=lastIndented(document,substarts, false);
-    if (trace) std::cout << "SEXPR indent, column=" << col << "\n";
+    if (trace) std::cerr << "SEXPR indent, column=" << col << "\n";
   }
   else // types[0] is sal entity, hopefully a command
   {
     if (cmdtoken)  // we stopped on a command
     {
-      if (trace){std::cout << "CMDTOKEN: " << cmdtoken->getName() << "\n";
-        std::cout << "  subtypes:";
-        for (int q=0;q<subtypes.size();q++) std::cout << " " << juce::String::toHexString(subtypes[q]);
-        std::cout << "\n";
+      if (trace){std::cerr << "CMDTOKEN: " << cmdtoken->getName() << "\n";
+        std::cerr << "  subtypes:";
+        for (int q=0;q<subtypes.size();q++) std::cerr << " " << juce::String::toHexString(subtypes[q]);
+        std::cerr << "\n";
       }
 
       int cmdline=pos.getLineNumber(); // num of line with cmd
@@ -1307,7 +1307,7 @@ int SalSyntax::getIndentation(juce::CodeDocument& document, int line)
           juce::CodeDocument::Position p ((const juce::CodeDocument&)document, substarts[last]);
           col=p.getIndexInLine()+4+1;
         }
-        if (trace) std::cout << "COMMA indent, column=" << col << "\n";
+        if (trace) std::cerr << "COMMA indent, column=" << col << "\n";
       }
       // ELSE (the very last line does NOT end with comma) if
       // line-1 is >= cmdline and DOES end with comma then we are
@@ -1317,12 +1317,12 @@ int SalSyntax::getIndentation(juce::CodeDocument& document, int line)
         if (cmdtoken->getData1()>0  && (!subtypes.contains(SalIDs::SalEnd)))
         {
           col=pos.getIndexInLine()+2;
-          if (trace) std::cout << "*BODY indent (after comma stop), column=" << col << "\n";
+          if (trace) std::cerr << "*BODY indent (after comma stop), column=" << col << "\n";
         }
         else
         {
           col=pos.getIndexInLine();
-          if (trace) std::cout << "RESET indent (after comma stop), column=" << col << "\n";
+          if (trace) std::cerr << "RESET indent (after comma stop), column=" << col << "\n";
         }
       }
       // ELSE if the last indented is 'else' then body indent
@@ -1331,7 +1331,7 @@ int SalSyntax::getIndentation(juce::CodeDocument& document, int line)
       {
         juce::CodeDocument::Position p ((const juce::CodeDocument&)document, substarts[last]);
         col=p.getIndexInLine()+2;
-        if (trace) std::cout << "ELSE indent, column=" << col << "\n";
+        if (trace) std::cerr << "ELSE indent, column=" << col << "\n";
       }          
       // else if the command is a body indent WITHOUT a closing end, indent to the last
       // expression or to 2 past the first (command) expr
@@ -1342,12 +1342,12 @@ int SalSyntax::getIndentation(juce::CodeDocument& document, int line)
           if (subtypes.size()>1 && subtypes[1]==SalIDs::SalVariable)
           {
             col=pos.getIndexInLine();
-            if (trace) std::cout << "NOT BODY indent, column=" << col << "\n";
+            if (trace) std::cerr << "NOT BODY indent, column=" << col << "\n";
           }
           else
           {
             col=pos.getIndexInLine()+2;
-            if (trace) std::cout << "BODY indent, column=" << col << "\n";
+            if (trace) std::cerr << "BODY indent, column=" << col << "\n";
           }
         }
         // else indent to the last expression
@@ -1355,7 +1355,7 @@ int SalSyntax::getIndentation(juce::CodeDocument& document, int line)
         {
           juce::CodeDocument::Position p ((const juce::CodeDocument&)document, substarts[last]);
           col=p.getIndexInLine();
-          if (trace) std::cout << "LAST indent (body), column=" << col << "\n";
+          if (trace) std::cerr << "LAST indent (body), column=" << col << "\n";
         }
       }
       // else indent to the last expression
@@ -1363,13 +1363,13 @@ int SalSyntax::getIndentation(juce::CodeDocument& document, int line)
       {
         juce::CodeDocument::Position p ((const juce::CodeDocument&)document, substarts[last]);
         col=p.getIndexInLine();
-        if (trace) std::cout << "LAST indent, column=" << col << "\n";
+        if (trace) std::cerr << "LAST indent, column=" << col << "\n";
       }
     }
     else
     {
       col=lastIndented(document, substarts, false);
-      if (trace) std::cout << "non-standard sal indent, column=" << col << "\n";
+      if (trace) std::cerr << "non-standard sal indent, column=" << col << "\n";
     }
   }
 
@@ -1380,11 +1380,11 @@ int SalSyntax::getIndentation(juce::CodeDocument& document, int line)
   juce::CodeDocument::Position eol ((const juce::CodeDocument&)document, orig, INT_MAX); 
   while (bol!=eol && (bol.getCharacter()==' ' || bol.getCharacter()=='\t')) 
     bol.moveBy(1);
-  if (trace) std::cout << "line is "<< bol.getLineText() << "\n";
+  if (trace) std::cerr << "line is "<< bol.getLineText() << "\n";
   if (lookingAt(bol, "end", true, true) || lookingAt(bol, "else", true, true))
   {
     col-=2;
-    if (trace) std::cout << "cursor is looking at end or else\n";
+    if (trace) std::cerr << "cursor is looking at end or else\n";
   }
   else if (getTextType()==TextIDs::Sal1 && lookingAt(bol, "define", true, true) )
   {
@@ -1417,7 +1417,7 @@ int SalSyntax::backwardExpr(juce::CodeDocument& document, juce::CodeDocument::Po
       {
         if (SalIDs::isSalCommandType(tok->getType()))
         {
-          //std::cout << "command=" << tok->getName().toUTF8() << "\n";
+          //std::cerr << "command=" << tok->getName().toUTF8() << "\n";
           return 1;
         }
       }
@@ -1449,7 +1449,7 @@ bool SalSyntax::tokenize(juce::CodeDocument& document, const juce::CodeDocument:
   // array adjust string positions accordingly
  
   //juce::String code=document.getTextBetween(start, end);
-  //std::cout << "expr='" << code.toUTF8() << "', start=" << start.getPosition() 
+  //std::cerr << "expr='" << code.toUTF8() << "', start=" << start.getPosition() 
   //          << ", end=" << end.getPosition() << "\n";
   errormessage=juce::String::empty;
   juce::CodeDocument::Position pos (start);
@@ -1510,7 +1510,7 @@ bool SalSyntax::tokenize(juce::CodeDocument& document, const juce::CodeDocument:
       {
         bool esc=false;
         juce::String unq=juce::String::empty;
-        //std::cout << "txt='" << txt.toUTF8() << "'\n";
+        //std::cerr << "txt='" << txt.toUTF8() << "'\n";
         for (int e=0;e<txt.length();e++)
           if (txt[e]=='\\')
             if (!esc) 
@@ -1526,7 +1526,7 @@ bool SalSyntax::tokenize(juce::CodeDocument& document, const juce::CodeDocument:
             esc=false;
           }
         txt=unq;
-        //std::cout << "txt='" << txt.toUTF8() << "'\n";
+        //std::cerr << "txt='" << txt.toUTF8() << "'\n";
       }
       tokens.add(new Syntax::SynTok(txt, SalIDs::SalString, loc));
     }
@@ -1563,7 +1563,7 @@ bool SalSyntax::tokenize(juce::CodeDocument& document, const juce::CodeDocument:
     scan=scanCode(document, pos,true,ScanIDs::MoveWhiteAndComments, end.getPosition());
   }
 
-  //std::cout << "tokens="; for (int i=0; i<tokens.size(); i++) std::cout << " " << tokens[i]->toString().toUTF8(); std::cout << "\n";
+  //std::cerr << "tokens="; for (int i=0; i<tokens.size(); i++) std::cerr << " " << tokens[i]->toString().toUTF8(); std::cerr << "\n";
 
   if (scan<0)
   {
@@ -1642,10 +1642,10 @@ void SalSyntax::eval(juce::CodeDocument& document, const juce::CodeDocument::Pos
 
     node->toks.swapWith(tokens);
 
-    //std::cout << "tokens=";
+    //std::cerr << "tokens=";
     //for (int i=0; i<node->toks.size(); i++)
-    //  std::cout << " " << node->toks[i]->toString().toUTF8();
-    //std::cout << "\n";
+    //  std::cerr << " " << node->toks[i]->toString().toUTF8();
+    //std::cerr << "\n";
     SchemeThread::getInstance()->addNode(node);
   }
   else
@@ -1892,7 +1892,7 @@ int Sal2Syntax::backwardExpr(juce::CodeDocument& document, juce::CodeDocument::P
       if (scan<=0)
         break;
       juce::String code=document.getTextBetween(pos, end);
-      //std::cout << "Code ("<<from.getPosition()<<","<<to.getPosition()<<"): '" << code.toUTF8() << "'\n";
+      //std::cerr << "Code ("<<from.getPosition()<<","<<to.getPosition()<<"): '" << code.toUTF8() << "'\n";
       if (scan==ScanIDs::SCAN_TOKEN)
       {
         scanned++;
@@ -1931,12 +1931,12 @@ int Sal2Syntax::backwardExpr(juce::CodeDocument& document, juce::CodeDocument::P
       // quit if scan error or only white space
       if (scan<=0)
       {
-        //std::cout << "breaking with scan <= 0: " << scan << "\n";;
+        //std::cerr << "breaking with scan <= 0: " << scan << "\n";;
         here=-1; // FIXED?
         break;
       }
       juce::String code=document.getTextBetween(pos,end);
-      //std::cout << "Code ("<<pos.getPosition()<<","<<end.getPosition()<<"): '" << code.toUTF8() << "'\n";
+      //std::cerr << "Code ("<<pos.getPosition()<<","<<end.getPosition()<<"): '" << code.toUTF8() << "'\n";
       if (scan==ScanIDs::SCAN_TOKEN)
       {
         scanned++;
@@ -1947,14 +1947,14 @@ int Sal2Syntax::backwardExpr(juce::CodeDocument& document, juce::CodeDocument::P
           // encountered or if its a clausal
           if (last==0 || SalIDs::isSalClausalType(tok->getType()))
           {
-            //std::cout<<"literal breaking with last==0"<<code.toUTF8()<<"\n";
+            //std::cerr<<"literal breaking with last==0"<<code.toUTF8()<<"\n";
             break;
           }
           scan=tok->getType();
           // if its a command then include and stop
           if (SalIDs::isSalCommandType(scan))
           {
-            //std::cout << "stopping on command '"<<code.toUTF8()<<"'\n";
+            //std::cerr << "stopping on command '"<<code.toUTF8()<<"'\n";
             here=pos.getPosition();
             break;
           }
@@ -1975,7 +1975,7 @@ int Sal2Syntax::backwardExpr(juce::CodeDocument& document, juce::CodeDocument::P
                    code.startsWith(":") ||
                    code.endsWith(":") )
           {
-            //std::cout<<"breaking with constant="<<code.toUTF8()<<"\n";
+            //std::cerr<<"breaking with constant="<<code.toUTF8()<<"\n";
             break;
           }
           // otherwise its a variable, if last was a () expr its
@@ -1985,7 +1985,7 @@ int Sal2Syntax::backwardExpr(juce::CodeDocument& document, juce::CodeDocument::P
             here=pos.getPosition();
           else
           {
-            //std::cout << "token breaking with code='"<<code.toUTF8()<<"'\n";
+            //std::cerr << "token breaking with code='"<<code.toUTF8()<<"'\n";
             break;
           }
         }
@@ -1996,7 +1996,7 @@ int Sal2Syntax::backwardExpr(juce::CodeDocument& document, juce::CodeDocument::P
         // its a comma, stop if last not an expression
         if (last==0 || SalIDs::isSalType(last))
         {
-          //std::cout << "breaking on SCAN_PUNCT=\n";
+          //std::cerr << "breaking on SCAN_PUNCT=\n";
           break;
         }
         scan=SalIDs::SalComma;
@@ -2014,7 +2014,7 @@ int Sal2Syntax::backwardExpr(juce::CodeDocument& document, juce::CodeDocument::P
       }
       else
       {
-        //std::cout << "breaking with scan=" << ScanIDs::scanResultToString(scan).toUTF8() << "\n";
+        //std::cerr << "breaking with scan=" << ScanIDs::scanResultToString(scan).toUTF8() << "\n";
         break;
       }
       if (pos==bob) break;
@@ -2023,18 +2023,18 @@ int Sal2Syntax::backwardExpr(juce::CodeDocument& document, juce::CodeDocument::P
       pos.moveBy(-1);
       scanCode(document, pos, false, ScanIDs::MoveWhiteAndComments);
     }
-  //std::cout << "_______________\n";
+  //std::cerr << "_______________\n";
 
   if (scan<0) 
   {
-    //std::cout << "returning: " << scan << "\n";
+    //std::cerr << "returning: " << scan << "\n";
     return scan;
   }
-  //std::cout << "after loop, here=" << here << "scan=" << scan << "\n";
+  //std::cerr << "after loop, here=" << here << "scan=" << scan << "\n";
   from.setPosition(here);
-  //std::cout << "setting from position="<< here << "\n";
+  //std::cerr << "setting from position="<< here << "\n";
   to.setPosition(top.getPosition());
-  //std::cout << "setting to position=" << top.getPosition() << "\n";
+  //std::cerr << "setting to position=" << top.getPosition() << "\n";
   
   // stopped without lower bound means no expr encountered
   if (here<0) 
@@ -2043,6 +2043,6 @@ int Sal2Syntax::backwardExpr(juce::CodeDocument& document, juce::CodeDocument::P
     if (scanned>0)
       here=pos.getPosition();
   }
-  //std::cout << "returning: "  << ((here>-1) ? 1 : scan) << "\n";
+  //std::cerr << "returning: "  << ((here>-1) ? 1 : scan) << "\n";
   return (here>-1) ? 1 : scan;
 }

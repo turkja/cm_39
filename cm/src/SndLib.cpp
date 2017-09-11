@@ -120,7 +120,7 @@ static void cm_stdout(s7_scheme *sc, unsigned char c, s7_pointer port)
     stdoutbuf[0] = '\r';
   }    
   Console::getInstance()->printOutput(stdoutbuf);
-  std::cout << stdoutbuf;
+  //std::cout << stdoutbuf;
 }
 
 /*

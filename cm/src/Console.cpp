@@ -78,7 +78,7 @@ void Console::display(juce::String str, juce::Colour color)
 
 void Console::printOutput(juce::String s, bool t)
 {
-  std::cout << s << std::flush;
+  std::cerr << s << std::flush;
   postAsyncMessage(CommandIDs::ConsolePrintOutput, s, t);
 }
 
@@ -90,13 +90,14 @@ void Console::printValues(juce::String s, bool t)
 
 void Console::printWarning(juce::String s, bool t)
 {
-  std::cout << s << std::flush;
+  std::cerr << s << std::flush;
   postAsyncMessage(CommandIDs::ConsolePrintWarning, s, t);
 }
 
 void Console::printError(juce::String s, bool t)
 {
-  std::cout << s << std::flush;
+  std::cerr << s << std::flush;
+  std::cout << "#f\n" << std::flush;
   postAsyncMessage(CommandIDs::ConsolePrintError, s, t);
 }
 

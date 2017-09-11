@@ -388,7 +388,7 @@ public:
   void repaintFocusPlot() {repaint();}
   void resized() 
   {
-    //    std::cout << "Plotview::resized(" << getWidth() << ", " << getHeight() << ")\n";
+    //    std::cerr << "Plotview::resized(" << getWidth() << ", " << getHeight() << ")\n";
     plotter->backview->setSize(getWidth(),getHeight());
   }
   void mouseDown(const juce::MouseEvent &e) ;
@@ -680,7 +680,7 @@ void drawLayer(juce::Graphics& g, Layer* layer, AxisView* haxview, AxisView* vax
       if (layer->isDrawStyle(Layer::vertical))
       {	
         // y origin is always greater than 
-        ////        std::cout << "vbar: px=" << ((int)(px-half))
+        ////        std::cerr << "vbar: px=" << ((int)(px-half))
         ////		  << " py=" << ((int)py) << " oy=" << ((int)oy)
         ////		  << " w=" << ((int)rw) << " h=" << ((int)(oy-py))
         ////		  << "\n";
@@ -808,8 +808,8 @@ int PlotView::findPoint(Layer* layer, double mausx, double mausy)
       bottom = vaxview->toValue(mausy + half);
       top = vaxview->toValue(mausy - half);
       x=haxview->axisMinimum();
-      std::cout << "mausx=" << haxview->toValue(mausx) << ", mausy=" << vaxview->toValue(mausy) << "\n";
-      std::cout << "left=" << left << ", right=" << right << ", top=" << top << ", bottom=" << bottom << "\n";
+      std::cerr << "mausx=" << haxview->toValue(mausx) << ", mausy=" << vaxview->toValue(mausy) << "\n";
+      std::cerr << "left=" << left << ", right=" << right << ", top=" << top << ", bottom=" << bottom << "\n";
       for (int i=0; (index==-1) && (x<=left) && i<layer->numPoints(); i++)
       {
       x=layer->getPointX(i);
@@ -1041,7 +1041,7 @@ Plotter::Plotter (juce::XmlElement* plot)
   juce::OwnedArray<juce::XmlElement> xmlplots;
   if (plot!=NULL)
   {
-    //    std::cout << plot->createDocument("").toUTF8() << "\n";
+    //    std::cerr << plot->createDocument("").toUTF8() << "\n";
     juce::XmlElement* sub=plot->getChildByName("fields");
     forEachXmlChildElement(*sub, e)
       if (e->hasTagName("field"))
@@ -1104,7 +1104,7 @@ Plotter::Plotter (juce::XmlElement* plot)
     if (!isSharedField(i))
       insureAxisValues(i);
     defaults->setVal(i,fields[i]->initval);
-    //    std::cout << "defaults["<<i<<"]="<<defaults->getVal(i) << "\n";
+    //    std::cerr << "defaults["<<i<<"]="<<defaults->getVal(i) << "\n";
   }
 
   xmlfields.clear(false);
@@ -1275,13 +1275,13 @@ bool Plotter::hasUnsavedChanges()
 {
   if (changed)
   {
-    //    std::cout << "plotter has unsaved changes\n";
+    //    std::cerr << "plotter has unsaved changes\n";
     return true;
   }
   for (int i=0; i<numLayers(); i++)
     if (getLayer(i)->hasUnsavedChanges())
     {
-      //      std::cout << "layer " << i << " has unsaved changes\n";
+      //      std::cerr << "layer " << i << " has unsaved changes\n";
       return true;
     }
   return false;
@@ -1343,7 +1343,7 @@ void Plotter::insureAxisValues(int index)
       ax->setTicks(2);
     }
     ax->type=Axis::generic; // make it a generic axis
-    //std::cout << "autosized axis[" << i <<"]: min=" << ax->getMinimum() << " max=" << ax->getMaximum() << "\n";
+    //std::cerr << "autosized axis[" << i <<"]: min=" << ax->getMinimum() << " max=" << ax->getMaximum() << "\n";
   }
   else if (ax->type==Axis::ordinal)
   {
@@ -1352,7 +1352,7 @@ void Plotter::insureAxisValues(int index)
       siz=juce::jmax(siz,layers[j]->numPoints());
     ax->setMaximum(siz-1);
   }
-  //  std::cout << "insureAxisValues [" << index << "]: " << ax->toString().toUTF8() << "\n";
+  //  std::cerr << "insureAxisValues [" << index << "]: " << ax->toString().toUTF8() << "\n";
 }
 
 void Plotter::insurePointsVisible()
@@ -1508,12 +1508,12 @@ void Plotter::setFocusLayer(Layer* layr)
   Axis* oldy=getVerticalAxisView()->getAxis();
   Axis* newx=getFieldAxis(layr->getXField());
   Axis* newy=getFieldAxis(layr->getYField());
-  //  std::cout << "setFocusLayer xfield=" << layr->getXField() << ", haxis=" << newx->toString().toUTF8() << "\n";
-  //  std::cout << "setFocusLayer yfield=" << layr->getYField() << ", vaxis=" << newy->toString().toUTF8() << "\n";
+  //  std::cerr << "setFocusLayer xfield=" << layr->getXField() << ", haxis=" << newx->toString().toUTF8() << "\n";
+  //  std::cerr << "setFocusLayer yfield=" << layr->getYField() << ", vaxis=" << newy->toString().toUTF8() << "\n";
 
   if ((oldx!=newx)||(oldy!=newy))
   {
-    //    std::cout << "updating visible axis\n";
+    //    std::cerr << "updating visible axis\n";
     setHorizontalAxis(newx);
     setVerticalAxis(newy);
     // doesnt work here...
@@ -1690,7 +1690,7 @@ void Plotter::checkFitInView()
   {
     double avail = 400;
     double xppt = avail/(haxview->numTicks() * haxview->axisIncrements());
-    //    std::cout << "avail=" << avail << ", Xppt=" << xppt << "\n";
+    //    std::cerr << "avail=" << avail << ", Xppt=" << xppt << "\n";
     if (xppt < 10)
       haxview->setFitInView(false);
   } 
@@ -1698,7 +1698,7 @@ void Plotter::checkFitInView()
   {
     double avail = 400;
     double yppt = avail/(vaxview->numTicks() * vaxview->axisIncrements());
-    //    std::cout << "avail=" << avail << ", Yppt=" << yppt << "\n";
+    //    std::cerr << "avail=" << avail << ", Yppt=" << yppt << "\n";
     if (yppt < 10)
       vaxview->setFitInView(false);
   } 
@@ -1715,7 +1715,7 @@ void Plotter::fitInView(double width, double height)
     // negative values
     if (width > 0)
     {
-      //      std::cout << "fitInView: setting X spread to fit " << width << "\n";
+      //      std::cerr << "fitInView: setting X spread to fit " << width << "\n";
       haxview->setSpreadToFit(width);
       myfit = true;
     }
@@ -1726,7 +1726,7 @@ void Plotter::fitInView(double width, double height)
       height = viewport->getMaximumVisibleHeight();
     if (height > 0)
     {
-      //      std::cout << "fitInView: setting Y spread to fit " << height << "\n";
+      //      std::cerr << "fitInView: setting Y spread to fit " << height << "\n";
       vaxview->setSpreadToFit(height);
       myfit = true;
     }
@@ -1738,20 +1738,20 @@ void Plotter::fitInView(double width, double height)
 void Plotter::resized () 
 {
   viewport->setBounds(70, 50, getWidth() - 80, getHeight() - 60);
-  //  std::cout << "plotter: x=" << getX() << ", y=" << getY() << ", w=" 
+  //  std::cerr << "plotter: x=" << getX() << ", y=" << getY() << ", w=" 
   //            << getWidth() << " h=" << getHeight() << "\n";
-  //  std::cout << "viewport: x=" << viewport->getX() << ", y=" << viewport->getY() 
+  //  std::cerr << "viewport: x=" << viewport->getX() << ", y=" << viewport->getY() 
   //            << ", w=" << viewport->getWidth() << " h=" << viewport->getHeight() 
   //            << ", vw=" << viewport->getViewWidth() << " vh=" << viewport->getViewHeight() 
   //            << ", mvw=" << viewport->getMaximumVisibleWidth() << " mvh="
   //            << viewport->getMaximumVisibleHeight() 
   //            << "\n";
-  //  std::cout << "plotview: x=" << plotview->getX() << ", y=" << plotview->getY() 
+  //  std::cerr << "plotview: x=" << plotview->getX() << ", y=" << plotview->getY() 
   //            << ", w=" << plotview->getWidth() << " h=" << plotview->getHeight() 
   //            << "\n";
   haxview->setBounds(70, 20, viewport->getVisibleWidth(), 26);
   vaxview->setBounds(2, 50, 64, viewport->getVisibleHeight());
-  //  std::cout << "xaxis: x=" << haxview->getX() << ", y=" << haxview->getY()
+  //  std::cerr << "xaxis: x=" << haxview->getX() << ", y=" << haxview->getY()
   //            << ", w=" << haxview->getWidth() << " h=" << haxview->getHeight() << "\n";
 }
 
@@ -1788,13 +1788,13 @@ void Plotter::pbSetMidiOut(int id)
 
 void Plotter::pause()
 {
-  //  std::cout << "Plotter::pause()\n";
+  //  std::cerr << "Plotter::pause()\n";
   pbThread->setPaused(true);
 }
 
 void Plotter::play(double pos)
 {
-  //  std::cout << "Plotter::play(" << pos << ")\n";
+  //  std::cerr << "Plotter::play(" << pos << ")\n";
   // force refinding playback indexes in layers before playing
   positionChanged(pos, false);
   pbThread->setPaused(false);
@@ -1802,13 +1802,13 @@ void Plotter::play(double pos)
 
 void Plotter::gainChanged(double gain, bool isPlaying)
 {
-  //  std::cout << "Plotter::gainChanged(" << gain << ", " << isPlaying << ")\n";
+  //  std::cerr << "Plotter::gainChanged(" << gain << ", " << isPlaying << ")\n";
   pbThread->setGain(gain);
 }
 
 void Plotter::tempoChanged(double tempo, bool isPlaying)
 {
-  //  std::cout << "Plotter::tempoChanged(" << tempo << ", " << isPlaying << ")\n";
+  //  std::cerr << "Plotter::tempoChanged(" << tempo << ", " << isPlaying << ")\n";
   pbThread->setTempo(tempo);
 }
 
@@ -1816,7 +1816,7 @@ void Plotter::positionChanged(double position, bool isPlaying)
 {
   // NB: POINT, LAYER AND AXIS EDITING SHOULD BE DISABLED DURING THIS OPERATION!
   juce::ScopedLock mylock (pbLock);
-  //  std::cout << "Plotter::positionChanged(" << position << ", " << isPlaying << ")\n";
+  //  std::cerr << "Plotter::positionChanged(" << position << ", " << isPlaying << ")\n";
   double tobeat = position * getHorizontalAxis()->getMaximum();
   if (isPlaying)
     pbThread->pause();
@@ -1825,7 +1825,7 @@ void Plotter::positionChanged(double position, bool isPlaying)
   {
     Layer* layer = getLayer(i);
     int next = layer->pbFindNextIndexForBeat(tobeat);
-    //    std::cout << "setting pbIndex in layer " << i << " to " << next <<"\n";
+    //    std::cerr << "setting pbIndex in layer " << i << " to " << next <<"\n";
     layer->pbIndex=next;
   } 
   pbThread->setPlaybackPosition(tobeat);
@@ -1880,7 +1880,7 @@ void Plotter::addMidiPlaybackMessages(MidiPlaybackThread::MidiMessageQueue& queu
       layer->pbIndex++;
     }      
   }
-  //  std::cout << "plotter addMidiPlaybackMessages("<<position.beat<<")\n";
+  //  std::cerr << "plotter addMidiPlaybackMessages("<<position.beat<<")\n";
 }
 
 void Plotter::handleMessage(juce::MidiMessage& midiMessage)

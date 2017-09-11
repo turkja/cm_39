@@ -32,7 +32,7 @@ Help::Help()
   documentationTable = dataDoc.getDocumentElement();
   // locate Grace directory, include version info in name
   documentationDirectory = Grace::getApp().applicationSupportDirectory.getChildFile("doc").getChildFile(SysInfo::getCMVersion());
-  //  std::cout << "DOCDIR=" << documentationDirectory.getFullPathName() << "\n";
+  //  std::cerr << "DOCDIR=" << documentationDirectory.getFullPathName() << "\n";
   // create Symbol help
   addSalSymbolHelp();
   addCommonMusicSymbolHelp();
@@ -243,7 +243,7 @@ void Help::openHelpInBrowser(juce::String url)
     else
     {
       url = url.replace(" ", "%20");
-      std::cout << "open help url='" << url << "'\n";
+      std::cerr << "open help url='" << url << "'\n";
       juce::URL(url).launchInDefaultBrowser();
     }
   }
@@ -317,7 +317,7 @@ void Help::exportFilesToDirectory(juce::CommandID command)
 
 void Help::symbolHelp(juce::String symbol, juce::String helppath)
 {
-  //  std::cout << "SymbolHelp: '" << symbol << "' (\""<< helppath << "\")\n";
+  //  std::cerr << "SymbolHelp: '" << symbol << "' (\""<< helppath << "\")\n";
 
   // search for symbol help in colon delimited help path.
   int i = 0;//, p = 0, l = helppath.length();
@@ -1329,7 +1329,7 @@ void Help::addSndLibSymbolHelp ()
 
 void print_cm_entries ()
 {
-  std::cout << "\n(define cm.html '(";
+  std::cerr << "\n(define cm.html '(";
   juce::File file=completeFile("/Users/hkt/Software/cm/res/doc/cm.html");
   if (! file.existsAsFile()) return;
   juce::FileInputStream stream (file);
@@ -1348,19 +1348,19 @@ void print_cm_entries ()
         if (end>-1)
         {
           juce::String tok=line.substring(start,end);
-          if (!first) std::cout << " ";
-          std::cout << tok ;
+          if (!first) std::cerr << " ";
+          std::cerr << tok ;
           first=false;
         }
       }
     }
   }
-  std::cout << "))\n";
+  std::cerr << "))\n";
 }
 
 void print_help_entries ()
 {
-  std::cout << "\n(define help.cpp '(";
+  std::cerr << "\n(define help.cpp '(";
   juce::File file=completeFile("/Users/hkt/Software/cm/src/Help.cpp");
   if (! file.existsAsFile()) return;
   juce::FileInputStream stream (file);
@@ -1377,13 +1377,13 @@ void print_help_entries ()
       if (end>-1)
       {
         juce::String tok=line.substring(start,end);
-        if (!first) std::cout << " ";
-        std::cout << tok;
+        if (!first) std::cerr << " ";
+        std::cerr << tok;
         first=false;
       }
     }
   }
-  std::cout << "))\n";
+  std::cerr << "))\n";
 }
 
 //  (loop for s in help.cpp if (not (member s cm.html)) collect s)
@@ -1391,7 +1391,7 @@ void print_help_entries ()
 
 void print_cm_index ()
 {
-  std::cout << "\n<h2 id="index">Index</h2>\n";
+  std::cerr << "\n<h2 id="index">Index</h2>\n";
   juce::File file=completeFile("/Users/hkt/Software/cm/res/doc/cm.html");
   if (! file.existsAsFile()) return;
   juce::FileInputStream stream (file);
@@ -1445,15 +1445,15 @@ void print_cm_index ()
     juce::String id=ent.substring(sp+1,ent.length());
     if (name[0]!=alpha)
     {
-      if (i>0) std::cout << "\n</p>\n";
-      std::cout << "\n<h4>" << juce::String::charToString(name[0]).toUTF8() << "</h4>\n<p>\n";
+      if (i>0) std::cerr << "\n</p>\n";
+      std::cerr << "\n<h4>" << juce::String::charToString(name[0]).toUTF8() << "</h4>\n<p>\n";
       letter=0;
     }
-    if (letter>0) std::cout << ", ";        
-    std::cout << "<a href=\"#" << id.toUTF8() << "\">" << name.toUTF8() << "</a>" ; 
+    if (letter>0) std::cerr << ", ";        
+    std::cerr << "<a href=\"#" << id.toUTF8() << "\">" << name.toUTF8() << "</a>" ; 
     alpha=name[0];
     letter++;
   }
-  std::cout << "\n</p>\n\n";
+  std::cerr << "\n</p>\n\n";
 }
 */
