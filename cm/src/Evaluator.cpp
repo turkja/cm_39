@@ -47,18 +47,20 @@ void EvaluatorThread::run()
   std::cout << "Welcome to Grace shell.\n" << std::flush;
   std::string s;
   std::string s_exp;
-  
+  bool input = 1;
   while (true) {
     size_t o = 0, c = 0;
-    std::cout << "> " << std::flush;
+    if (input) std::cout << "> " << std::flush;
 
     // Read line
     while (true) {
       // Clear EOF
       if (!std::getline(std::cin, s)) {
 	std::cin.clear();
+	input = 0;
 	break;
       }
+      input = 1;
       // Consider only characters leading up to ";"
       std::size_t cf = s.find_first_of(";");
       if (cf != std::string::npos)
