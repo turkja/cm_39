@@ -1,23 +1,21 @@
 
-# Common Music 3.9
-
 ```
  /\\\
 ---\\\---------
 ----\\\--------
-----/\\\------- Common Music 3.9.0
+----/\\\------- Common Music 3.9.0 console hack
 ---/--\\\------
 --/----\\\-----
  /      \\\/
 ```
 
-This is a copy of CM/Grace 3.9 with a little hack that allowed me to
+This is a copy of [CM/Grace 3.9](http://commonmusic.sourceforge.net/) with a little hack that allowed me to
 use it as a emacs scheme-mode inferior Scheme. It is pretty much the
 standard CM-3.9, but it also listens to S-expressions from standard input.
 
 ## How to use
 
-Assuming CM/Grace is compiled successfully from directory "cm", here's how to use it from emacs:
+Assuming Grace is compiled successfully from directory "cm", here's how to use it from emacs:
 
 - Open .scm files you want to use with CM.
 - Run M-x run-scheme (set also scheme-program-name, see below).
